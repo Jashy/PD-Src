@@ -1,0 +1,35 @@
+#! tvf
+namespace import tvf::*
+
+if [ info exists env(LAYOUT_SYSTEM) ] {
+LAYOUT SYSTEM $env(LAYOUT_SYSTEM)
+}
+if [ info exists env(LAYOUT_PRIMARY) ] {
+LAYOUT PRIMARY \"$env(LAYOUT_PRIMARY)\"
+}
+if [ info exists env(LAYOUT_PATH) ] {
+LAYOUT PATH \"$env(LAYOUT_PATH)\"
+}
+if [ info exists env(SOURCE_SYSTEM) ] {
+SOURCE SYSTEM $env(SOURCE_SYSTEM)
+}
+if [ info exists env(SOURCE_PRIMARY) ] {
+SOURCE PRIMARY \"$env(SOURCE_PRIMARY)\"
+}
+if [ info exists env(SOURCE_PATH) ] {
+SOURCE PATH \"$env(SOURCE_PATH)\"
+}
+if [ info exists env(LVS_REPORT) ] {
+LVS REPORT \"$env(LVS_REPORT)\"
+}
+if { [ info exist env(DUMP_ENVIRONMENT)] && ($env(DUMP_ENVIRONMENT) == "TRUE" || $env(DUMP_ENVIRONMENT) == "YES") } {
+        puts "--- ENVIRONMENT SETTINGS:"
+        foreach env_var [lsort [array name env]] {
+                puts "$env_var=$env($env_var)"
+        }
+        puts "--- END OF ENVIRONMENT SETTINGS DUMP"
+}
+
+
+source "$env(CALIBRE_LVS_DECK)"
+

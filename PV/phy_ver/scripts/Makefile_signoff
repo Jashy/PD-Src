@@ -1,0 +1,132 @@
+fill: merge_stdcell calibre_fill
+drc: fill calibre_dp calibre_drc 
+lvs: v2lvs calibre_lvs
+
+
+
+
+clean_drc:
+	rm -rf run_merge run_drc merge_stdcell calibre_drc run_mas run_pm calibre_pm_run mas_run calibre_dp dp_merge calibre_fill
+
+clean_lvs:
+	#rm -rf run_v2lvs run_lvs v2lvs calibre_lvs run_merge calibre_fill merge_stdcell
+	rm -rf run_lvs calibre_lvs
+
+clean_fill:
+	rm -rf run_fill calibre_fill design_data/gds/*fill*
+
+clean_all: clean_drc clean_lvs clean_fill
+	rm -rf mas_run calibre_pm_run run_pm run_mas merge_stdcell run_merge calibre_dp dp_merge design_data/gds/*fill* design_data/gds/*merged* design_data/gds/DP_colored*
+
+	
+merge_stdcell:
+	echo "INFO: Merging standard cell GDS with design GDS"; \
+	mkdir -p run_merge; \
+	cd run_merge; \
+	calibredrv -64  ../scripts/merge_stdcell_gds.tcl | tee merge_stdcell_gds.log; \
+	touch ../merge_stdcell ;	\
+	cd ..
+	
+calibre_fill:clean_fill
+	echo "INFO: Running Calibre FILL"
+	mkdir -p run_fill; \
+	cd run_fill; \
+	tclsh ../scripts/gen_calibre_setup.tcl; \
+	csh ../scripts/genfill.csh | tee genfill.log ; \
+	cp -p  *.fill.* ../design_data/gds ; \
+	cp -p  *.merged.* ../design_data/gds ; \
+	touch ../calibre_fill ;	\
+	cd ..	
+
+		
+calibre_dp:dp_merge_clean
+	echo "INFO: Running Calibre DRC on the final database"; \
+	mkdir run_dp; \
+	cd run_dp; \
+	tclsh ../scripts/gen_calibre_setup.tcl; \
+	csh ../scripts/calibre_drc.csh | tee calibre_dp.log; \
+	mkdir -p results; \
+	mv *rdb results ; \
+	cp -p DP_colored.* ../design_data/gds ; \
+	touch ../calibre_dp;	\
+	cd ..
+
+
+calibre_drc:
+	echo "INFO: Merging DP colored into Filled GDS and creating final file. DRC and LVS run again on final file."
+	mkdir -p run_drc; \
+	cd run_drc; \
+	calibredrv -64 ../scripts/merge_dp_gds.tcl | tee merge_dp_gds.log; \
+	touch ../dp_merge; \
+	cp -p *.final.* ../design_data/gds ; \
+	tclsh ../scripts/gen_calibre_setup.tcl; \
+	csh ../scripts/calibre_drc.csh | tee calibre_drc_final.log; \
+	mkdir -p results; \
+	mv *rdb results ; \
+	touch ../calibre_drc ;	\
+	cd ..
+
+
+v2lvs:
+	echo "INFO: Running v2lvs on the design"; \
+	mkdir run_v2lvs; \
+	cd run_v2lvs; \
+	tclsh ../scripts/v2lvs.tcl | tee v2lvs.log ; \
+	touch ../v2lvs; \
+	cd ..
+	
+
+calibre_lvs:
+	echo "INFO: Running Calibre LVS on final database"
+	mkdir run_lvs; \
+	cd run_lvs; \
+	tclsh ../scripts/gen_calibre_setup.tcl; \
+	csh ../scripts/calibre_lvs.csh | tee calibre_lvs.log ; \
+	touch ../calibre_lvs;	\
+	cd ..
+
+
+dp_merge_clean:
+	rm -rf run_dp; \
+	rm -f dp_merge
+
+mas_run:mas_clean
+	echo "INFO: Running Calibre MAS Scoring"
+	mkdir -p run_mas; \
+	cd run_mas; \
+	tclsh ../scripts/gen_calibre_setup.tcl; \
+	tclsh ../scripts/gen_mas_setup.tcl; \
+	tcsh ../scripts/calibre_mas.csh | tee calibre_mas.log; \
+	touch ../mas_run; \
+	cd ..	
+
+mas_clean:
+	rm -rf run_mas; \
+	rm -f mas_run
+
+calibre_pm_run:calibre_pm_clean
+	echo "INFO: Running Calibre Pattern Matching" 
+	mkdir -p run_pm; \
+	cd run_pm; \
+	tclsh ../scripts/gen_pm_setup.tcl; \
+	tcsh ../scripts/calibre_pm.csh | tee calibre_pm.log; \
+	touch ../calibre_pm_run;	\
+	cd ..
+
+calibre_pm_clean:
+	rm -rf run_pm; \
+	rm -f calibre_pm_run
+
+
+calibre_perc:calibre_perc_clean
+	echo "INFO: Running Calibre Perc Checking"
+	mkdir -p run_perc; \
+	cd run_perc; \
+	tclsh ../scripts/gen_perc_setup.tcl; \
+	tcsh ../scripts/calibre_perc.csh | tee calibre_perc.log; \
+	touch ../calibre_perc_run; \
+	cd ..
+
+calibre_perc_clean:
+	rm -rf run_perc; \
+	rm -rf calibre_perc_run

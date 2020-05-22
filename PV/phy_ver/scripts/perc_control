@@ -1,0 +1,18 @@
+#!tvf
+
+
+# All variables below are set in the run_perc.example file provided with the kit
+
+tvf::SOURCE PATH \"$env(netlist_data)\"
+tvf::SOURCE PRIMARY $env(top_level_cell_name)
+tvf::SOURCE PATH \"$env(devices_cdl)\"
+tvf::PERC REPORT \"$env(perc_report)\"
+tvf::PERC NETLIST SOURCE
+
+tvf::MASK SVDB DIRECTORY \"$env(outputdir)/$env(top_level_cell_name).svdb\" \
+    QUERY
+
+source $env(PERC_RUNSET)
+
+
+
