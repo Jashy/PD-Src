@@ -11,8 +11,16 @@ sys.path = sys.path + glob.glob("/home/ex-jia.song@iluvatar.local/pycharm/icpd/t
 import openFile as opf
 
 def sum_timing(rpt):
-	is_timing_report = ""
-	is_data_path = ""
+	is_timing_report = 0
+	short_flag = 1
+	no_derate_flag = 1
+	si_flag = 0
+	nonsi_flag = 0
+	start_flag = 0
+	level_flag = 0
+	end_flag = 0
+	latch_flag = 0
+	end_clock_flag = 0
 	startpoint_cell = ""
 	endpoint_cell = ""
 	startpoint_clock = ""
@@ -20,21 +28,24 @@ def sum_timing(rpt):
 	startpoint_latency = ""
 	endpoint_latency = ""
 	skew = 0
-	start_flag = 0
-	end_flag = 0
-	level_flag = 0
 	level = 0
-	short_flag = 1
-	end_clock_flag = 0
-	no_derate_flag = 1
+	buf_num = 0
+	clock_period = 0
 	f_readlines = opf.readlines_file(rpt)
 	Dict = {}
 	slack_list = []
 	for line in f_readlines:
 		line = line.strip()
+		if "_nonsi" in line:
+			nonsi_flag = 1
+		if "-groups reg2cgate" in line:
+			latch_flag = 1
 		mHead = re.match("^Report\s+:\s+[tT]iming",line)
 		mStart = re.match("Startpoint:\s(\S+)\s\S+\s\S+\s\S+\s\S+\s\S+\s(\S+)\)",line)
-		mEnd = re.match("Endpoint:\s(\S+)\s\S+\s\S+\s\S+\s\S+\s\S+\s(\S+)\)",line)
+		if latch_flag == 1:
+			mEnd = re.match("Endpoint:\s(\S+)\s\S+\s\S+\s\S+\s\S+\s\S+\s\S+\s+(\S+)\)",line)
+		if latch_flag == 0:
+			mEnd = re.match("Endpoint:\s(\S+)\s\S+\s\S+\s\S+\s\S+\s\S+\s(\S+)\)",line)
 		mSlack = re.match("slack\s+\S+\s+(\S+)",line)
 		if mHead:
 			is_timing_report = 1
@@ -42,10 +53,15 @@ def sum_timing(rpt):
 			short_flag = 0
 		if is_timing_report and "-derate" in line:
 			no_derate_flag = 0
+		if is_timing_report and "Delay Calculation" in line:
+			if nonsi_flag == 0:
+				si_flag = 1
 		if mStart:
 			startpoint_cell = mStart.group(1)
 			startpoint_clock = mStart.group(2)
 			start_flag = 1
+			buf_num = 0
+			level = 0
 		if mEnd:
 			endpoint_cell = mEnd.group(1)
 			endpoint_clock = mEnd.group(2)
@@ -53,8 +69,7 @@ def sum_timing(rpt):
 		if start_flag and startpoint_cell in line and "clocked by" not in line:
 			if "CK" in line or "CLK" in line:
 				level_flag = 1
-				level = 0
-				if short_flag:
+				if short_flag and no_derate_flag:
 					reStart = re.match("(\S+)\s+\S+\s+\S+\s+\S+\s+(\S+)",line)
 				else:
 					reStart = re.match("(\S+)\s+\S+\s+\S+\s+\S+\s+\S+\s+(\S+)",line)
@@ -64,8 +79,11 @@ def sum_timing(rpt):
 					Dict[startpoint_pin] = {}
 		if level_flag and "(net)" in line:
 			level = level + 1
+		if level_flag and "/X" in line:
+			if "_INV_" in line or "_BUF_" in line:
+				buf_num = buf_num + 1
 		if end_flag and endpoint_cell in line and "clocked by" not in line:
-			if "CK" not in line and "CLK" not in line:
+			if "/CK" not in line and "/CLK" not in line and "/Q" not in line:
 				level_flag = 0
 				end_clock_flag = 1
 				endpoint_pin = re.match("(\S+)\s+\(",line).group(1)
@@ -79,6 +97,8 @@ def sum_timing(rpt):
 				if "CK" in line or "CLK" in line:
 					if short_flag and no_derate_flag:
 						reEnd = re.match("\S+\s+\S+\s+\S+\s+\S+\s+(\S+)",line)
+					elif si_flag:
+						reEnd = re.match("\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+(\S+)",line)
 					else:
 						reEnd = re.match("\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+(\S+)",line)
 					endpoint_time = round(float(reEnd.group(1)),1)
@@ -86,9 +106,12 @@ def sum_timing(rpt):
 					skew = round(startpoint_latency - endpoint_latency,1)
 		if mSlack:
 			slack = float(mSlack.group(1))
+			#print(startpoint_pin,endpoint_pin,slack)
 			slack_list.append(slack)
 			Dict[startpoint_pin][endpoint_pin]["slack"] = slack
 			Dict[startpoint_pin][endpoint_pin]["level"] = level
+			Dict[startpoint_pin][endpoint_pin]["buf_num"] = buf_num
+			Dict[startpoint_pin][endpoint_pin]["logic_num"] = level - buf_num
 			Dict[startpoint_pin][endpoint_pin]["skew"] = skew
 			Dict[startpoint_pin][endpoint_pin]["startpoint_clock"] = startpoint_clock
 			Dict[startpoint_pin][endpoint_pin]["endpoint_clock"] = endpoint_clock
@@ -109,16 +132,28 @@ def print_sum(Dict):
 		worst_slack = worst_list[1]
 		num = len(end_dict)
 		if worst_slack["slack"] <= 0:
-			head = str(num) + "\t" + str(start_pin) + " " + str(worst_slack["slack"]) + " (" + str(worst_slack["level"]) + ") " + "(" + worst_slack["startpoint_clock"] + ") " + "(" + str(worst_slack["skew"]) + ")"
+			start_pin = str(start_pin)
+			start_w_slack = " " + str(worst_slack["slack"])
+			start_w_level = " (depth:" + str(worst_slack["level"]) + ")"
+			start_w_buf_num = " (buf:" + str(worst_slack["buf_num"]) + ")"
+			start_w_logic_num = " (logic:" + str(worst_slack["logic_num"]) + ")"
+			start_w_skew = " (skew:" + str(worst_slack["skew"]) + ")"
+			start_pin_clock = " (" + worst_slack["startpoint_clock"] + ":"
+			start_pin_latency = str(worst_slack["startpoint_latency"]) + ")"
+			head = str(num) + "\t" + start_pin + start_w_slack + start_w_level + start_w_buf_num + start_w_logic_num + start_pin_clock + start_pin_latency + start_w_skew
 			print(head)
+			#print(end_dict)
 			for key2 in end_dict:
+				#print(key2)
 				end_pin_dict = end_dict[key2]
 				end_pin_slack = " " + str(end_pin_dict["slack"])
 				end_pin_level = " (" + str(end_pin_dict["level"]) + ")"
+				end_pin_buf_num = " (" + str(end_pin_dict["buf_num"]) + ")"
+				end_pin_logic_num = " (" + str(end_pin_dict["logic_num"]) + ")"
 				end_pin_clock = " (" + end_pin_dict["endpoint_clock"] + ":"
 				end_pin_latency = str(end_pin_dict["endpoint_latency"]) + ")"
 				end_pin_skew = " (" + str(end_pin_dict["skew"]) + ")"
-				end_pin = "\t" + key2 + end_pin_slack + end_pin_level + end_pin_clock + end_pin_latency + end_pin_skew
+				end_pin = "\t" + key2 + end_pin_slack + end_pin_level + end_pin_buf_num + end_pin_logic_num + end_pin_clock + end_pin_latency + end_pin_skew
 				if end_pin_dict["slack"] <= 0:
 					print(end_pin)
 			print()

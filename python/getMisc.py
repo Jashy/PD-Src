@@ -27,12 +27,21 @@ def fill_all_stages(stages):
 	return all_stages
 
 def get_pnr_stages():
-	I2Place = "./pass/icc2_placeopt"
-	I2Cts = "./pass/icc2_cts"
-	I2OptCts = "./pass/icc2_optcts"
-	I2Route = "./pass/icc2_route"
-	I2OptRoute = "./pass/icc2_optroute"
+	I2Floorplan = "./pass/icc2_floorplan_reports"
+	I2Powerplan = "./pass/icc2_powerplan_reports"
+	I2PostFloorplan = "./pass/icc2_postfloorplan_reports"
+	I2Place = "./pass/icc2_placeopt_reports"
+	I2Cts = "./pass/icc2_cts_reports"
+	I2OptCts = "./pass/icc2_optcts_reports"
+	I2Route = "./pass/icc2_route_reports"
+	I2OptRoute = "./pass/icc2_optroute_reports"
 	stages = []
+	if os.path.isfile(I2Floorplan):
+	    stages.append("icc2_floorplan")
+	if os.path.isfile(I2Powerplan):
+	    stages.append("icc2_powerplan")
+	if os.path.isfile(I2PostFloorplan):
+	    stages.append("icc2_postfloorplan")
 	if os.path.isfile(I2Place):
 	    stages.append("icc2_placeopt")
 	if os.path.isfile(I2Cts):
@@ -76,16 +85,13 @@ def get_pnr_groups():
 					groupFlag = headTemp[1].strip()
 					if "in2" not in groupFlag and "2out" not in groupFlag and "default" not in groupFlag and "input" not in groupFlag and "output" not in groupFlag and "tocto" not in groupFlag and "CLK" not in groupFlag:
 						groups.append(groupFlag)
-	else:
-		print("Error! Can't find ./rpts/icc2_placeopt/icc2_placeopt.report_qor.rpt.gz")
 	return groups
 
 def get_runtime():
 	stages = get_pnr_stages()
-	all_stages = fill_all_stages(stages)
 	runtimeDict = {}
 	total = 0
-	for stage in all_stages:
+	for stage in stages:
 		log_file = "./logs/" + stage + ".log.gz"
 		cmd = 'zgrep ' + '"Elapsed time for this session" ' + log_file
 		time_info = str(os.popen(cmd).readlines())

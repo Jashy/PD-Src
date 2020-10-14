@@ -11,9 +11,9 @@ import getMisc as gm
 import openFile as opf
 
 def get_inst_count(stages):
-	all_stages = gm.fill_all_stages(stages)
+	#all_stages = gm.fill_all_stages(stages)
 	InstCountDict = {}
-	for stage in all_stages:
+	for stage in stages:
 		qor_rpt = "./rpts/" + stage + "/" + stage + ".report_qor.rpt.gz"
 		if os.path.isfile(qor_rpt):
 			fo_readlines = opf.readlines_file(qor_rpt)
@@ -29,7 +29,7 @@ def get_inst_count(stages):
 	return InstCountDict
 
 def get_utilization(stages):
-	stages = gm.fill_all_stages(stages)
+	#stages = gm.fill_all_stages(stages)
 	UtilizationDict = {}
 	for stage in stages:
 		utl_rpt = "./rpts/" + stage + "/" + stage + ".report_utilization.rpt.gz"
@@ -67,7 +67,7 @@ def get_size():
 				point = point.strip().split(' ')
 				x = str(int(point[0]) / 1000.00)
 				y = str(int(point[1]) / 1000.00)
-				size = " " + x + " x " + y
+				size = x + " x " + y
 	else:
 		size = "N/A"
 	return size
