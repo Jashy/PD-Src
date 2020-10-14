@@ -1,0 +1,223 @@
+#Check to see if all Environment variable have been set before trying to run deck
+
+ setenv	BATCH  		YES
+ setenv	TECHDIR 	/proj/BTC/LIB_NEW/TechFile/EDA_Techfile/mentor/CalibreDRC
+
+#Insert primary cell & layout path & name of output
+ setenv  LAYOUT_SYSTEM    GDSII			#Set a input Layout type : GDSII or OASIS
+ setenv  LAYOUT_PATH  
+ setenv  RESULTS_DATABASE 
+ setenv  SUMMARY_REPORT  
+
+ setenv RDB_DIR ./RDB_RESULTS			# Set a sub-directory for saving density & antenna results file (.rdb)
+ setenv	DENSITY_RESULTS density.results
+ setenv	ANTENNA_RESULTS antenna.results
+
+##### REQUIRED ENVIRONMENTAL VARIABLES #####
+
+ #setenv BEOL_STACK 9M_3Mx_4Cx_2Gx_LB
+ #setenv BEOL_STACK 9M_3Mx_2Cx_2Kx_2Gx_LB
+ #setenv BEOL_STACK 11M_3Mx_4Cx_2Kx_2Gx_LB
+ #setenv BEOL_STACK 10M_5Mx_3Cx_2Gx_LB
+ #setenv BEOL_STACK 9M_3Mx_5Cx_1Gx_LB
+ #setenv BEOL_STACK 10M_3Mx_4Cx_2Kx_1Gx_LB
+ setenv BEOL_STACK 8M_3Mx_4Cx_1Gx_LB
+
+ #setenv DESIGN_TYPE CELL
+ #setenv DESIGN_TYPE CELL_NODEN
+ setenv DESIGN_TYPE CHIP
+ #setenv DESIGN_TYPE CHIP_NODEN
+ #setenv DESIGN_TYPE CELL_FEOL_ONLY
+ #setenv DESIGN_TYPE CHIP_FEOL_ONLY
+ #setenv DESIGN_TYPE CELL_BEOL_ONLY
+ #setenv DESIGN_TYPE CHIP_BEOL_ONLY
+ #setenv DESIGN_TYPE CELL_FEOL_NODEN
+ #setenv DESIGN_TYPE CHIP_FEOL_NODEN
+ #setenv DESIGN_TYPE CELL_BEOL_NODEN
+ #setenv DESIGN_TYPE CHIP_BEOL_NODEN
+ #setenv DESIGN_TYPE CELL_FEOL_NOESD_NOHV_NODEN_NODPT
+ #setenv DESIGN_TYPE CHIP_FEOL_NOESD_NOHV_NODEN_NODPT
+ #setenv DESIGN_TYPE CELL_BEOL_NOESD_NOHV_NODEN_NODPT
+ #setenv DESIGN_TYPE CHIP_BEOL_NOESD_NOHV_NODEN_NODPT
+ #setenv DESIGN_TYPE CELL_ANT_ONLY
+ #setenv DESIGN_TYPE CHIP_ANT_ONLY
+ #setenv DESIGN_TYPE CELL_ESD_ONLY
+ #setenv DESIGN_TYPE CHIP_ESD_ONLY
+ #setenv DESIGN_TYPE CELL_DENSITY_ONLY
+ #setenv DESIGN_TYPE CHIP_DENSITY_ONLY
+ #setenv DESIGN_TYPE CELL_HV_ONLY
+ #setenv DESIGN_TYPE CHIP_HV_ONLY
+ #setenv DESIGN_TYPE CELL_BEOL_M1Mx_ONLY
+ #setenv DESIGN_TYPE CHIP_BEOL_M1Mx_ONLY
+ #setenv DESIGN_TYPE CELL_BEOL_Cx_ONLY
+ #setenv DESIGN_TYPE CHIP_BEOL_Cx_ONLY
+ #setenv DESIGN_TYPE CELL_BEOL_KxGx_ONLY
+ #setenv DESIGN_TYPE CHIP_BEOL_KxGx_ONLY
+ #setenv DESIGN_TYPE CELL_BEOL_BUMPLB_ONLY
+ #setenv DESIGN_TYPE CHIP_BEOL_BUMPLB_ONLY
+ #setenv DESIGN_TYPE CELL_DPT_ONLY
+ #setenv DESIGN_TYPE CHIP_DPT_ONLY
+ #setenv DESIGN_TYPE DPT_GEN_ONLY
+
+ setenv IOTYPE INLINE_50
+ #setenv IOTYPE INLINE_60
+ #setenv IOTYPE STAGGERED_30
+ #setenv IOTYPE STAGGERED_25
+ #setenv IOTYPE 3ON6			# C4	
+
+ setenv OUTLINE_CHECK YES		# To check OUTLINE.C.1, set this to YES
+ #setenv OUTLINE_CHECK NO		# if NO, GROUTLINE.C.1.warning will be reported.
+
+ #setenv FCPBGA YES
+ setenv FCPBGA NO			# default
+
+ #setenv C_ORIENTATION HORIZONTAL
+ setenv C_ORIENTATION VERTICAL		# Chip level required to be VERTICAL in SEC
+
+ #setenv P_DENSITY_CHECK YES
+ setenv P_DENSITY_CHECK NO		# default
+
+##### OPTIONAL ENVIRONMENTAL VARIABLES #####
+
+ setenv CUSTOMER  SEC 			# default
+ 
+ #setenv SEC_CELL_BOUNDARY DB_EXTENT
+ setenv SEC_CELL_BOUNDARY OUTLINE	#default
+ #setenv SEC_CELL_BOUNDARY EXCLUD
+
+ setenv ERROR_LIMITATION DEFAULT	# default : DRC results will be reported maximum 1000 counts.
+ #setenv ERROR_LIMITATION UNLIMITED	# if set to UNLIMITED, will be reported unlimited counts.
+
+ #setenv CHIP_DIE_COUNT	1CHIP_SHOT	
+ #setenv CHIP_DIE_COUNT 1X2CHIP_SHOT	
+ #setenv CHIP_DIE_COUNT 2X1CHIP_SHOT	
+ #setenv CHIP_DIE_COUNT 1X3CHIP_SHOT	
+ #setenv CHIP_DIE_COUNT 3X1CHIP_SHOT	
+ #setenv CHIP_DIE_COUNT 2X2CHIP_SHOT
+ setenv CHIP_DIE_COUNT OVER_5CHIP_SHOT	
+ 
+ #setenv RECOMMENDED_RULES YES
+ setenv RECOMMENDED_RULES NO		# default
+
+ #setenv OCD_OVL_RECOMMENDED_RULES YES
+ setenv OCD_OVL_RECOMMENDED_RULES NO		# default
+
+ #setenv CELL_FINE_SS YES		# for density step size 0.5 um, must use at cell level check
+ setenv CELL_FINE_SS NO
+
+ setenv CUSTOM_CELL_SS NO               # if CELL_FINE_SS = NO and CUSTOM_CELL_SS = NO, the step size will be the same as design rule
+ #setenv CUSTOM_CELL_SS YES             # if CELL_FINE_SS = NO and CUSTOM_CELL_SS = YES, cell density window step size will be customized
+ setenv CELL_SS 10                      # customized cell density window size = density window size / CELL_SS
+
+ setenv DO_SRULES YES			# default
+ #setenv DO_SRULES NO
+
+ #setenv EXCLUDE_CHECKS
+
+ #setenv EXCEPTION_RDB
+
+ #setenv EXCLUDE_CELL
+
+
+##### Debug Options Variables #####
+
+ #setenv BOOLEAN_DEBUG YES
+ setenv BOOLEAN_DEBUG NO
+
+ #setenv STB_DEBUG YES
+ setenv STB_DEBUG NO
+
+##### Double Patterning Environmental Variables #####
+
+ #setenv DP_CHECK_DESIGN_M1 YES
+ #setenv DP_CHECK_DESIGN_M1 NO
+ #setenv DP_CHECK_DESIGN_M2 YES
+ #setenv DP_CHECK_DESIGN_M2 NO
+ #setenv DP_CHECK_DESIGN_M3 YES
+ #setenv DP_CHECK_DESIGN_M3 NO
+ #setenv DP_CHECK_DESIGN_M4 YES
+ #setenv DP_CHECK_DESIGN_M4 NO
+ #setenv DP_CHECK_DESIGN_M5 YES
+ #setenv DP_CHECK_DESIGN_M5 NO
+ #setenv DP_CHECK_DESIGN_ALL YES
+ #setenv DP_CHECK_DESIGN_ALL NO	
+
+ #setenv DP_DECOMP_PREVIEW YES
+ #setenv DP_DECOMP_PREVIEW NO
+
+ #setenv CA_COLORED YES
+ setenv CA_COLORED NO 			# default
+
+ #setenv CA_COLORED_VIEW YES
+ #setenv CA_COLORED_VIEW NO
+
+ #setenv CB_COLORED YES
+ setenv CB_COLORED NO 			# default
+
+ #setenv CB_COLORED_VIEW YES
+ #setenv CB_COLORED_VIEW NO
+
+ #setenv DP_LAYOUT_OUT GDS
+ #setenv DP_LAYOUT_OUT OASIS
+
+ #setenv DP_GENERATION_TOOL_M1 YES
+ #setenv DP_GENERATION_TOOL_M1 NO
+ #setenv DP_GENERATION_TOOL_M2 YES
+ #setenv DP_GENERATION_TOOL_M2 NO
+ #setenv DP_GENERATION_TOOL_M3 YES
+ #setenv DP_GENERATION_TOOL_M3 NO
+ #setenv DP_GENERATION_TOOL_M4 YES
+ #setenv DP_GENERATION_TOOL_M4 NO
+ #setenv DP_GENERATION_TOOL_M5 YES
+ #setenv DP_GENERATION_TOOL_M5 NO
+ #setenv DP_GENERATION_TOOL_ALL YES
+ #setenv DP_GENERATION_TOOL_ALL NO	
+
+ #setenv DP_FLAT_DESIGN_M1 YES
+ #setenv DP_FLAT_DESIGN_M1 NO
+ #setenv DP_FLAT_DESIGN_M2 YES
+ #setenv DP_FLAT_DESIGN_M2 NO
+ #setenv DP_FLAT_DESIGN_M3 YES
+ #setenv DP_FLAT_DESIGN_M3 NO
+ #setenv DP_FLAT_DESIGN_M4 YES
+ #setenv DP_FLAT_DESIGN_M4 NO
+ #setenv DP_FLAT_DESIGN_M5 YES
+ #setenv DP_FLAT_DESIGN_M5 NO
+ #setenv DP_FLAT_DESIGN_ALL YES
+ #setenv DP_FLAT_DESIGN_ALL NO
+
+ #setenv DP_AUTO_FILLSTITCH YES
+ #setenv DP_AUTO_FILLSTITCH NO
+
+ #setenv DP_AUTO_STITCH_CA YES		# turn on if you want to generate CA jumper stitch
+ #setenv DP_AUTO_STITCH_CA NO
+
+ #setenv DP_AUTO_STITCH_M1 YES
+ #setenv DP_AUTO_STITCH_M1 NO
+ #setenv DP_AUTO_STITCH_M2 YES
+ #setenv DP_AUTO_STITCH_M2 NO
+ #setenv DP_AUTO_STITCH_M3 YES
+ #setenv DP_AUTO_STITCH_M3 NO
+ #setenv DP_AUTO_STITCH_M4 YES
+ #setenv DP_AUTO_STITCH_M4 NO
+ #setenv DP_AUTO_STITCH_M5 YES
+ #setenv DP_AUTO_STITCH_M5 NO
+ #setenv DP_AUTO_STITCH_ALL YES
+ #setenv DP_AUTO_STITCH_ALL NO
+
+ #setenv DP_LONG_RANGE_SEPARATOR_M1 YES
+ #setenv DP_LONG_RANGE_SEPARATOR_M1 NO
+ #setenv DP_LONG_RANGE_SEPARATOR_M2 YES
+ #setenv DP_LONG_RANGE_SEPARATOR_M2 NO
+ #setenv DP_LONG_RANGE_SEPARATOR_M3 YES
+ #setenv DP_LONG_RANGE_SEPARATOR_M3 NO
+ #setenv DP_LONG_RANGE_SEPARATOR_M4 YES
+ #setenv DP_LONG_RANGE_SEPARATOR_M4 NO
+ #setenv DP_LONG_RANGE_SEPARATOR_M5 YES
+ #setenv DP_LONG_RANGE_SEPARATOR_M5 NO
+ #setenv DP_LONG_RANGE_SEPARATOR_ALL YES
+ #setenv DP_LONG_RANGE_SEPARATOR_ALL NO
+
+ #setenv DENSITY_FLATTEN_M YES		# turn on when clear metal density error
+ #setenv DENSITY_FLATTEN_M NO		
+

@@ -1,0 +1,60 @@
+### virtuoso strmin template file ##
+### by jasons  ##
+### 2015/0617 ##
+library	 "_LIBNAME_"	      # <Destination Library>
+strmFile  "_GDSFILE_"	      # <Comma Seperated Quoted List of Input Stream Files>
+strmTechGen		      # <Stream Tech File to be generated>
+runDir     "."                #	<Run Directory>
+logFile   "_LOGFILE_"         #	<Output Log File Name>
+topCell    ""                 # <Toplevel Cell to Translate>
+view       "layout"           # <Destination View Name>
+hierDepth    32               # <Hierarchical Depth to Translate to>
+summaryFile   ""              # <Summary File Name>
+cellMap      ""               #	<Input Cell Map File>
+case         "preserve"       #	<upper | lower | preserve >
+labelCase     "preserve"      #	<upper | lower | preserve >
+#replaceBusBitChar            #	<Replace "[           #" With "<>">
+layerMap    "_layermapfile_"  #	<Quoted List of Layer Map Files>
+fontMap      ""               #	<Input Font Map File>
+propMap      ""               #	<Input Property Map File>
+objectMap    ""               #	<Object Mapping File>
+viaMap       ""               # <Via Mapping File>
+userSkillFile  ""             # <User Skill File>
+propSeparator   ""            # <Property Separator Character>
+pinAttNum      0              #	< Stream Attribute Number 0-127 >
+#ignoreBoxes                  #
+refLibList     ""             # <Name of The File Containing Refliblist>
+dbuPerUU      0               #	<DB Units per user units>
+scale                         #	<Design Scaling Factor>
+#reportPrecisionLoss          #	<Report Precision Loss Because of dbuPerUU Value>
+#keepStreamCells              #	<Keep Stream Cells>
+#arrayInstToScalar            #	<Convert AREF to Scalar Instances>
+attachTechFileOfLib   ""      # <Attach This Tech Lib With Target Lib>
+loadTechFile        "_TECHFILE_"   # <ASCII Tech File>
+techRefs         ""           # <Ordered List of Reference Tech Libs>
+#skipUndefinedLPP             # <Donot Create Undefined LPPs in The Techfile>
+#translateNode                # <Convert Node to Dot>
+#ignoreZeroWidthPath          #	<Convert Zero With Path to Line>
+#convertPathToPathSeg         #	<Convert 2-Point Path to PathSeg>
+#snapToGrid                   # <Snap to Grid>
+scaleTextHeight       "1.0"   #	<Scale Text Height (Positive Scaling Value)>
+numThreads        1           #	<Nunmber of Threads Used for Translation>
+enableLocking                 #	<Enable File Locking>
+maxCellsInTargetLib   "20000" #	<Maximum Cells in Target Library>
+#mergeUndefPurposToDrawing    #	<Merges Undefined Purposes to Drawing>
+templateFile    ""            #	<Name of The File Containing Option Names And Values>
+#detectVias                   #	<Detect The Via Defs And Create Them in The Database>
+excludeMapToVia    ""         #	<Via exclusion Data file>
+#checkPolygon                 # <Report Bad Polygons And Paths>
+strmTextNS      "cdba"        # <NameSpace of The TEXT Records in The Stream File>
+noInfo       ""               # <Quoted List of Info Message Ids>
+noWarn       ""               #	<Quoted List of Warning Message Ids>
+infoToWarn     ""             # <Quoted List of Info Message Ids>
+warnToErr      ""             #	<Quoted List of Warning Message Ids>
+#wildCardInCellMap            #	<Wild Card in cell map file>
+compress                      #	<Allow libraries to be compressed>
+compressLevel                 #	<Defines the compression level to use (default: 1)>
+enableIncrementalImport       #	<Enable incremental import of multiple Stream Files>
+writeMode                     # <Write Mode (overwrite|noOverwrite|append|rename) for Existing Cells (default: overwrite)>
+#overwriteRootCells           #	<Overwrite the root/top Cells in case writeMode is rename>
+enableColoring                # <Enable Coloring Support>

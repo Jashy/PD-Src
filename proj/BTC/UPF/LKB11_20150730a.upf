@@ -1,0 +1,54 @@
+
+create_power_domain PD_TOP -include_scope
+create_power_domain PD_HPD -elements "u_hce_pd"
+create_power_domain PD_PPD -elements "u_pll_pd u_pad"
+
+create_supply_port VDD 
+create_supply_port VSS 
+create_supply_port VDD_HIGH
+create_supply_net  VDD 
+create_supply_net  VSS 
+create_supply_net  VDD_HIGH 
+set_voltage 0.76 -object_list {VDD_HIGH}
+set_voltage 0.59 -object_list {VDD}
+set_voltage 0.0 -object_list {VSS}
+
+connect_supply_net VDD -ports VDD 
+connect_supply_net VSS -ports VSS 
+connect_supply_net VDD_HIGH -ports VDD_HIGH
+
+derive_pg_connection -power_net VDD -power_pin VDD -ground_net VSS -ground_pin VSS
+derive_pg_connection -power_net VDD -power_pin VNW -ground_net VSS -ground_pin VPW
+derive_pg_connection -power_net VDD_HIGH -power_pin VDD -cells "u_pll_pd" -reconnect
+derive_pg_connection -power_net VDD_HIGH -power_pin VNW -cells "u_pll_pd" -reconnect
+derive_pg_connection -power_net VDD_HIGH -power_pin VDD -cells "u_pad" -reconnect
+derive_pg_connection -power_net VDD_HIGH -power_pin VNW -cells "u_pad" -reconnect
+
+
+set_domain_supply_net  PD_HPD  -primary_power_net VDD     -primary_ground_net VSS 
+set_domain_supply_net  PD_TOP  -primary_power_net VDD     -primary_ground_net VSS 
+set_domain_supply_net  PD_PPD  -primary_power_net VDD_HIGH -primary_ground_net VSS 
+
+set HtoL {u_pll_pd/core_clk u_pll_pd/pll_lock u_pll_pd/xclk_rst_n u_pll_pd/core_rst_n {u_pll_pd/pll_dbg_out[0]} {u_pll_pd/pll_dbg_out[1]} {u_pll_pd/pll_dbg_out[2]} {u_pll_pd/pll_dbg_out[3]} {u_pll_pd/pll_dbg_out[4]} u_pad/bp_fm_pad u_pad/uprx u_pad/dnrx u_pad/xclk u_pad/test_fm_pad}
+
+set_level_shifter LS_strategy_PPD_HtoL \
+	-domain PD_PPD -elements $HtoL \
+	-applies_to outputs \
+	-rule both \
+	-location self \
+	-name_prefix LS_HtoL 
+
+set LtoH {u_hce_pd/pll_val_fm_hpd_16_ u_hce_pd/pll_val_fm_hpd_15_ u_hce_pd/pll_val_fm_hpd_14_ u_hce_pd/pll_val_fm_hpd_13_ u_hce_pd/pll_val_fm_hpd_11_ u_hce_pd/pll_val_fm_hpd_5_ u_hce_pd/pll_val_fm_hpd_4_ u_hce_pd/pll_val_fm_hpd_2_ u_hce_pd/pll_val_fm_hpd_24_ u_hce_pd/pll_val_fm_hpd_23_ u_hce_pd/pll_val_fm_hpd_22_ u_hce_pd/pll_val_fm_hpd_21_ u_hce_pd/pll_val_fm_hpd_20_ u_hce_pd/pll_val_fm_hpd_19_ u_hce_pd/pll_val_fm_hpd_18_ u_hce_pd/pll_val_fm_hpd_17_ u_hce_pd/pll_dbg_in_fm_hpd_0_ u_hce_pd/pll_val_fm_hpd_31_ u_hce_pd/pll_val_fm_hpd_30_ u_hce_pd/pll_val_fm_hpd_29_ u_hce_pd/pll_val_fm_hpd_28_ u_hce_pd/pll_val_fm_hpd_27_ u_hce_pd/pll_val_fm_hpd_26_ u_hce_pd/pll_val_fm_hpd_25_ u_hce_pd/pll_dbg_in_fm_hpd_9_ u_hce_pd/pll_dbg_in_fm_hpd_8_ u_hce_pd/pll_dbg_in_fm_hpd_7_ u_hce_pd/pll_dbg_in_fm_hpd_6_ u_hce_pd/pll_dbg_in_fm_hpd_5_ u_hce_pd/pll_dbg_in_fm_hpd_4_ u_hce_pd/pll_dbg_in_fm_hpd_3_ u_hce_pd/pll_dbg_in_fm_hpd_1_ u_hce_pd/pll_dbg_in_fm_hpd_17_ u_hce_pd/pll_dbg_in_fm_hpd_16_ u_hce_pd/pll_dbg_in_fm_hpd_15_ u_hce_pd/pll_dbg_in_fm_hpd_14_ u_hce_pd/pll_dbg_in_fm_hpd_13_ u_hce_pd/pll_dbg_in_fm_hpd_12_ u_hce_pd/pll_dbg_in_fm_hpd_11_ u_hce_pd/pll_dbg_in_fm_hpd_10_ u_hce_pd/pll_dbg_in_fm_hpd_25_ u_hce_pd/pll_dbg_in_fm_hpd_24_ u_hce_pd/pll_dbg_in_fm_hpd_23_ u_hce_pd/pll_dbg_in_fm_hpd_22_ u_hce_pd/pll_dbg_in_fm_hpd_21_ u_hce_pd/pll_dbg_in_fm_hpd_20_ u_hce_pd/pll_dbg_in_fm_hpd_19_ u_hce_pd/pll_dbg_in_fm_hpd_18_ u_hce_pd/pll_cfg_fm_hpd u_hce_pd/pll_dbg_in_fm_hpd_31_ u_hce_pd/pll_dbg_in_fm_hpd_30_ u_hce_pd/pll_dbg_in_fm_hpd_29_ u_hce_pd/pll_dbg_in_fm_hpd_28_ u_hce_pd/pll_dbg_in_fm_hpd_27_ u_hce_pd/pll_dbg_in_fm_hpd_26_ u_hce_pd/dntx_fm_hpd u_hce_pd/pok_to_pad u_hce_pd/uptx_fm_hpd}
+
+set_level_shifter LS_strategy_HPD_LtoH \
+	-domain PD_HPD \
+	-elements $LtoH \
+	-applies_to outputs \
+	-rule both \
+	-location self \
+	-name_prefix LS_LtoH 
+
+map_level_shifter_cell LS_strategy_PPD_HtoL -domain PD_PPD -lib_cells {LVLUO_X4N_A9PP84TL_C14_YO}
+map_level_shifter_cell LS_strategy_HPD_LtoH -domain PD_HPD -lib_cells {LVLUO_X4N_A9PP84TL_C14_YO}
+
+insert_mv_cells -level_shifter

@@ -1,0 +1,69 @@
+### virtuoso strmout template file ##
+### by jasons  ##
+### 2015/0617 ##
+library		"_LIBNAME_"        #<Input Library>
+strmFile	"_OUTGDS_"     	   #<Output Stream File>
+strmVersion	5	           #<Stream Version Number>
+runDir		"."                #<Run Directory>
+topCell		"_TOPCELL_"        #<Toplevel Cells to Translate>
+view		"layout"	   #<Toplevel Cell View Name>
+logFile		"_LOGFILE_"        #<Output Log File Name>
+summaryFile	""	           #<Output Summary File>
+techLib		""	           #<Technology Library>
+hierDepth	32	           #<Hierarchical Depth to Translate to>
+layerMap	"_layermapfile_"   #<Quoted List of Layer Map Files>
+labelMap	""	#<Input Label Map File>
+labelDepth	"1"	#<Hierarchical Depth to Add Labels to>
+#replaceBusBitChar	#<Replace "<>" With "[">
+cellMap		""	#<Input Cell Map File>
+fontMap		""	#<Input Font Map File>
+propMap		""	#<Input Property Map File>
+objectMap	""	#<Quoted List of Object Mapping Files>
+viaMap		""	#<Via Mapping File>
+viaCutArefThreshold "0"	#<Threshold Value For Creating AREF For Cut Geometries For Via>
+userSkillFile	""	#<User Skill File>
+refLibList	""	#<Name of The File Containing Refliblist >
+#arrayInstToScalar
+cellNamePrefix	""	#<Cell Name Prefix>
+cellNameSuffix	""	#<Cell Name Suffix>
+#ignoreTopCellPrefixSuffix  #<Ignore cellName Prefix and Suffix for topCell>
+case		"preserve"	#<upper | lower | preserve >
+labelCase	"preserve"	#<upper | lower | preserve >
+#ignoreLines
+#noOutputTextDisplays
+#noOutputUnplacedInst	#<Do not Output Unplaced Instances>
+convertDot	"ignore"	#<node | polygon | ignore >
+convertPin	"geometry"	#<geometry | text | geometryAndText | ignore >
+pinAttNum	"0"	#<Stream Attribute Num (1-127) For Preserving Pins>
+#pathToPolygon
+#propValueOnly		#<Output Property Values Only>
+#rectToBox
+#respectGDSIINameLimit
+gdsCellNameLength	#<Truncate GDS Cell/STRUCT name length to specified value (>=10)>
+#flattenPcells
+#flattenVias
+#doNotPreservePcellPins
+#snapToGrid
+dbuPerUU	0	#<DB Units per user units>
+#reportPrecisionLoss	#<Report Precision Loss Because of dbuPerUU Value>
+#noObjectProp
+#ignorePcellEvalFail
+#mergePathSegsToPath	#<Merging pathSegs into a single PATH>
+#noConvertHalfWidthPath	#<Do not Convert The Half Width Path to Boundary>
+#checkPolygon		#<Report Bad Polygons And Paths>
+#backupGdsLogFiles	#	<Backup GDSII and LOG files, if they already exist>
+maxVertices	200	#<Maximum Limit of Vertices (5-4000) Allowed in Stream File>
+strmTextNS	"cdba"	#<NameSpace of The TEXT Records in The Stream File>
+templateFile	""	#<Name of The File Containing Option Names And Values>
+cellListFile	""	#<Name of the file containing cellList>
+outputDir	""	#<output directory>
+noInfo		""	#<Quoted List of Info Message Ids>
+noWarn		""	#<Quoted List of Warning Message Ids>
+warnToErr	""	#<Quoted List of warning Message Ids>
+infoToWarn	""	#<Quoted List of Info Message Ids>
+donutNumSides	""	#<Number of sides (Positive value) for the BOUNDARY of donut>
+ellipseNumSides	""	#<Number of sides (Positive value) for the BOUNDAR of ellipse>
+#wildCardInCellMap	#<Wild Card in cell map file>
+#ignoreMissingCells	#<Ignore Missing cellViews During Translation and Continue Translation>
+subMasterSeparator	#<Separator to used for sub-master naming (default: "_CDNS_")>
+enableColoring		#<Enable Coloring Support>

@@ -1,0 +1,72 @@
+# -----------------------------------------------------------------------------
+#   Example run file for running PERC
+#     -Demonstrates what variables need to be set and an example of 
+#        the command line used for running perc
+# -----------------------------------------------------------------------------
+# High, medium and low capacitance ESD power pad names
+#   Comman delimited list, wildcards supported.  Example: "VDD? DVDD"
+#setenv LC_POWER_PAD "VDD VDD_1 AVVD DVDD"
+setenv LC_POWER_PAD "VDD PLL_DVDD08 VDD_HIGH PLL_AVDD18 DVDD_left DVDD_right DVDD_top DVDD_bottom"
+
+#setenv LC_GROUND_PAD "VSS VSS_1 AVSS DVSS"
+setenv LC_GROUND_PAD "VSS DVSS PLL_AVSS18"
+
+# Enter the internal power nets which do not have ports at the top level.  The perl pre-processor
+#   will automatically add these to a .GLOBAL statement to a .cdl.
+#setenv SHIFTED_POWER "ShiftedEXAMPLE"
+setenv SHIFTED_POWER ""
+
+# Enter the I/O Pad net names.  ESD checking is performed on each net listed
+#setenv FULL_ESD "IO_1 IO_2 IO_3 IO_4 IO_5 IO_6 IO_7"
+setenv FULL_ESD "PLL_AVDD18 PLL_AVSS18 BYPASS CHI CHO CLI CLKO CLO DBG PLL_DVDD08 DVDD_bottom DVDD_left DVDD_right DVDD_top DVSS NRSTO POK RSTN TEST VDD VSS XCLKIN"
+setenv EXCEPTION_FULL_ESD ""
+
+# Set if the deck should run the recommended rules, VALID INPUTS: YES/NO
+setenv RECOMMENDED_RULES "YES"
+
+# Set if the deck should run the checks for the Power Rails, VALID INPUTS: YES/NO
+# EXAMPLE: This will run ESDEC4 if set to YES
+setenv POWER_CHECKS "NO"
+
+# Set io option for ESDEC3/ESDEC3Na/ESDEC3Nb rule check, VALID INPUTS: YES/NO
+# EXAMPLE: This will run ESDEC3 if set to NO
+setenv HBM_OPTION "YES"
+
+# Only 15 rules which are not checked on DRC are executed, VALID INPUTS: YES/NO
+# This option is avaliable only chip level design.
+setenv SUB_SET_CHECKING "YES"
+setenv DESIGN_TYPE "CHIP"
+
+# OPTION SETTING
+setenv COMPARE_CASE "NO"
+setenv ESDEC5_MAIN_GND "NONE"
+
+# Execute the cdl pre-processor to add the shifted power nets to the GLOBAL statement
+#   in the .cdl file.  
+#   If no internal power nets are needed there is no need to use this file
+#
+#   usage: percPreProcessor.pl <original netlist path> <new netlist path>
+#    This script input must have both the path/filename of the original netlist and
+#    the path/filename to the new netlist which will include the updated GLOBAL ./output_top_level_cell_name/top_level_cell_name.perc.reportstatement
+#./utils/percPreProcessor.pl ./example.cdl ./example.cdl.netlist.perc
+
+# Input cdl file - Use one of the below options and comment the other one out
+  # If using the pre-processor make sure to use the file that was output from the percPreProcessor.pl
+#setenv netlist_data ./example.cdl.netlist.perc
+  # If not using the pre-processor use the original netlist
+#setenv netlist_data $CDL_PATH
+setenv netlist_data ../lvs/source/LKB11_top_09-09.spi
+
+# Input the design name, and output directory
+#   NOTE: The output directory must exist prior to the PERC run
+#setenv top_level_cell_name $CDL_PRIMARY
+setenv top_level_cell_name LKB11
+
+setenv outputdir ./output_$top_level_cell_name
+
+setenv perc_report $outputdir/${top_level_cell_name}.perc.report
+# Runset and config file locations
+setenv PERC_RUNSET /proj/BTC/LIB_NEW/TechFile/EDA_Techfile/mentor/CalibrePERC/PERC/ln14lpp.percESD.tvf
+setenv tech_dir /proj/BTC/LIB_NEW/TechFile/EDA_Techfile/mentor/CalibrePERC/PERC/Include
+setenv config_file /proj/BTC/LIB_NEW/TechFile/EDA_Techfile/mentor/CalibrePERC/PERC/Include/ln14lpp.config.xml
+

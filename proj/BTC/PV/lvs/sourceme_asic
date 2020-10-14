@@ -1,0 +1,88 @@
+## ENVIRONMENT SETTING ##
+setenv TECHDIR /proj/BTC/LIB_NEW/TechFile/EDA_Techfile/mentor/CalibreLVS
+
+## DO NOT MODIFY HERE ##
+setenv CUSTOM_INCLUDE		FALSE		# TRUE || FALSE
+
+## FOR SETTING BEOL STACK ##
+setenv BEOL_STACK 8M_3Mx_4Cx_1Gx_LB ## 9M_3Mx_4Cx_2Gx_LB || 9M_3Mx_2Cx_2Kx_2Gx_LB || 11M_3Mx_4Cx_2Kx_2Gx_LB || 10M_5Mx_3Cx_2Gx_LB || 9M_3Mx_5Cx_1Gx_LB || 10M_3Mx_4Cx_2Kx_1Gx_LB || 8M_3Mx_4Cx_1Gx_LB
+
+
+## FOR SETTING C-ORIENTATION ##
+## This switch affect to the "orientation" property for rmres which used for calculating Rend.
+setenv C_ORIENTATION   		VERTICAL	# HORIZONTAL || VERTICAL
+## FOR EXTRACTING PEX PARAMETERS ##
+unsetenv PEX_RUN				# TRUE || unsetenv
+unsetenv NWPROXIMITY				# TRUE || unsetenv
+unsetenv RETARGET				# TRUE || unsetenv
+unsetenv STRESS			FALSE		# TRUE || unsetenv
+setenv EXTRACT_FILL_LAYERS	TRUE		# TRUE || FALSE
+setenv EXTRACT_XPOS_YPOS	FALSE		# TRUE || FALSE
+
+## To support XACT flow, do not use in sourceme_asic
+##setenv XACT_FLOW 		FALSE		# TRUE || FALSE
+## FOR PEX FLOW, it should be set to TRUE, do not use in sourceme_asic
+##setenv LVS_PUSH_DEVICE_SEPARATE_PROPERTIES    TRUE # TRUE || FALSE
+
+
+## COMPARING PARAMETER SETTING ##
+setenv CHECK_MOSFET_PLORIENT		FALSE		# TRUE || FALSE
+setenv CHECK_MOSFET_NGCON		FALSE		# TRUE || FALSE
+setenv CHECK_MOSFET_CPP			FALSE		# TRUE || FALSE
+setenv TRACE_RESISTANCE			FALSE		# TRUE || FALSE
+setenv CHECK_RESISTOR_ORIENTATION	FALSE		# TRUE || FALSE
+setenv CHECK_RESISTOR_R_CUT		TRUE		# TRUE || FALSE
+setenv CHECK_ESD_AREA			FALSE		# TRUE || FALSE
+setenv CHECK_MIM_AREA_PERIM		FALSE		# TRUE || FALSE
+
+
+## OPTION SETTING ##
+setenv LVS_PUSH_DEVICES		TRUE		# TRUE || FALSE
+setenv NETLIST_PRE_LAYOUT_LOCAL	TRUE		# TRUE || FALSE
+setenv SHORT_EQUIVALENT_NODES	TRUE		# TRUE || FALSE
+setenv COMPARE_CASE		TRUE		# TRUE || FALSE
+setenv PORT_DEPTH		PRIMARY	        # ALL  || PRIMARY
+setenv TEXT_DEPTH		PRIMARY 	# ALL  || PRIMARY
+
+## LVS REPORT COUNTING SETTING ##
+setenv LVS_REPORT_MAX		1000 		# ALL  || number
+
+## FILTER_OPTION SETTING ##
+## no filter is default for SEC. leave with unsetenv.
+## If you like to set filter option, 
+## find the Calibre Manual for the propert setting.
+unsetenv FILTER_OPTIONS				
+
+## VIRTUAL CONNECTION SETTING ##
+## if you want to use the virtual connection
+## 1. remove the "#" from below "#setenv VIRTUAL_CONNECT "" "
+## 2. put the text name which you want to virtually connect
+## 3. for example : setenv VIRTUAL_CONNECT "VDD"
+## if you don't want to use the virtual connection
+## do not remove the "#", it might cause an error.
+
+#setenv VIRTUAL_CONNECT " "
+
+## ERC SETTING ##
+setenv RUN_ERC 	 TRUE # TRUE || FALSE
+
+## PWR/GND SETTING for ERC ##
+setenv PWR10 "VDD PLL_DVDD08 VDD_HIGH"
+setenv PWR12 "NONE1" 
+setenv PWR15 "PLL_AVDD18" 
+setenv PWR18 "DVDD_left DVDD_right DVDD_top DVDD_bottom"
+setenv GNDS  "VSS DVSS PLL_AVSS18"
+
+## To waive ERC_SGCAP_x error. please see ERC release note.
+setenv PWR10V "NONE0V"
+
+
+## Virtual PWR for customer's request. It is used for generated pwr in sub cell, not on PAD. 
+## If there are no VPWR/GND, Just remain as VNONEx.
+## example VPWR10 "VDD VDD10"
+setenv VPWR10 "VNONE0" 
+setenv VPWR12 "VNONE1"
+setenv VPWR15 "VNONE2" 
+setenv VPWR18 "VNONE3" 
+setenv VGNDS  "VNONE4" 
+              
