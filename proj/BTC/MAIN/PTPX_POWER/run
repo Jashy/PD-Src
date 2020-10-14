@@ -1,0 +1,3 @@
+#!/bin/csh -f
+source  /proj/HJ/WORK/data/setup/mycshrc_n
+/apps/synopsys/pts_vH-2012.12-SP3/amd64/syn/bin/pt_shell -f ./power_cal.ptpx.tcl | tee ./ptpx.log

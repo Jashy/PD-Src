@@ -1,0 +1,6 @@
+set_dont_touch [get_flat_nets -of [get_flat_pins  */SNS ] ]
+set_dont_touch [get_flat_nets -of [get_flat_pins  */RTO ] ]
+set_dont_touch [get_cells u_pad/ALCP_FOR_LEVELSHIFT_U0 ]
+set_dont_touch [get_nets -of [get_pins u_hce_pd/u_eh/u_hce_*/tx*] ]
+set_dont_touch [get_nets -of [get_pins u_hce_pd/u_eh/u_hce_*/rx[0] ] ]
+set_dont_touch [get_nets -of [get_pins u_hce_pd/u_eh/u_hce_*/rx[1] ] ]

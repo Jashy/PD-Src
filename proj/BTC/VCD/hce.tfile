@@ -1,0 +1,3 @@
+PATH  TB.u_hce.u_hce_core.u_hce_rst_sync.sync_ff1_reg           -tcheck
+PATH  TB.u_hce.u_hce_core.u_hce_s2p_rx.srl_minus_d_reg_1_0_      -tcheck
+PATH  TB.u_hce.u_hce_core.u_hce_s2p_rx.srl_plus_d_reg_1_0_   -tcheck

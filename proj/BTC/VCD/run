@@ -1,0 +1,11 @@
+#!/bin/csh -f
+source ~lukez/.mycshrc
+mkdir -p Wi_SDF Wo_SDF;
+
+cd Wo_SDF 
+irun -q -f ../file_gate.f +freq=_freq_ -top TB -nontcglitch +notimingchecks +define+VCD  -seq_udp_delay 1ps +ncnowarn+CUVWSP +ncnowarn+LIBNOU +access+rwc -pragma
+cd ..
+
+cd Wi_SDF;
+irun -q -f ../file_gate.f +freq=_freq_ -top TB -nontcglitch +access+rw +define+VCD +define+SDF -tfile ../hce.tfile
+cd ..

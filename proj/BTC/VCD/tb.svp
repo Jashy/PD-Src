@@ -1,0 +1,554 @@
+`include "Crandc.sv"
+`timescale 1ps/10fs
+
+`define MAX_TP_NUM  1220 
+`define TEST_TP_NUM	20
+`define HCE_CORE_CNT `HCE_CITY
+
+//`ifdef VCD
+//`define DLY_VCD
+//`endif
+
+module TB;
+
+//parameter F_CORE = 800;
+`define TB_HCE_MATRIX_SIZE (`HCE_MATRIX_SIZE+32)
+`define TB_HCE_CFG_SIZE (`HCE_CFG_SIZE+1)
+`define TB_HCE_DSIZE 13
+
+parameter SDF_FILE = "_SDF_FILE_";
+
+initial begin
+	$display("+++++++++++++++++++++++++++");
+	$display("SDF_FILE = %0s", SDF_FILE);
+	$display("+++++++++++++++++++++++++++");
+//	$finish;
+end	
+
+
+reg		clk;
+reg		rst_n;
+
+reg[31:0]    F_CORE = 800;
+real	clk_period;
+
+reg[1023:0]  dumpfile;
+
+initial begin
+  if($value$plusargs("freq=%d", F_CORE)) begin
+    clk_period = 1000000.0/F_CORE;
+	$display("[NOTE]: CLK FREQ IS : %d MHZ", F_CORE);
+  end
+  else begin
+    clk_period = 1000000.0/F_CORE;
+	$display("[NOTE]: CLK FREQ IS NOT SPECIFIED, USING DEFAULT VALUE: %d MHZ", F_CORE);
+  end
+end
+
+
+initial begin
+	clk = 0;
+	forever begin
+		#(clk_period/2.0) clk = ~clk;
+	end
+end	
+
+initial
+begin
+	rst_n = 1'b0;
+	repeat(10)
+		@(posedge clk);
+	rst_n = 1'b1;
+end	
+
+task nop1;
+	@(posedge clk)
+	#1;
+endtask
+
+
+reg		[7:0]	unit_id;
+wire	[7:0]	brc_id = `HCE_RADIO;		//broadcast id
+
+wire			cfg_p_i, cfg_n_i;
+reg				pre_req;
+
+wire			rpt_p;
+wire			rpt_n;
+
+hce u_hce(
+	.street   ( unit_id ),
+	.radio    (`HCE_RADIO),
+	.city     (`HCE_CITY),
+	.clk        ( clk      ),
+	.rst_n      ( rst_n    ),
+	.rx         ( {cfg_p_i,cfg_n_i}  ),
+	.tx         ( {rpt_p,rpt_n}      )
+);	
+
+cfg_pn_bfm cfg (
+	.clk   ( clk     ),
+	.cfg_p ( cfg_p_i ),
+	.cfg_n ( cfg_n_i )
+);
+
+wire			rx_end;
+wire	[33:0]	rx_data;
+wire			pn_rx_start;
+wire			pn_rx_busy;
+rpt_rx #(34) u_rpt_rx (
+	.rpt_p_i  ( rpt_p       ),
+	.rpt_n_i  ( rpt_n       ),
+	.clk      ( clk         ),
+	.rst_n    ( rst_n       ),
+	.rx_start ( pn_rx_start ),
+	.rx_end   ( rx_end      ),
+	.rx_busy  ( pn_rx_busy  ),
+	.rx_data  ( rx_data     )
+);
+
+
+`pragma protect begin_protected
+`pragma protect encrypt_agent="NCPROTECT"
+`pragma protect encrypt_agent_info="ncprotect	12.20-p001	 Jul 15, 2015 at 14:59:21 CST"
+`pragma protect data_keyowner="Cadence Design Systems."
+`pragma protect data_keyname="CDS_DATA_KEY"
+`pragma protect data_method="AES256-CBC"
+`pragma protect encoding = (enctype = "BASE64", line_length = 76, bytes = 2496)
+`pragma protect data_block
+SHXVHRKR?a999999YFms3izieLONygAcDnpcdtoKoKkyOEwCFGdqoB1RZt0YsbOTdSzVJQ2fzYlY
+WVnSlgKs9Uf8SFXeYURSH3YBTTEsnw5xK98irmOMVgVnF/EPxLRAsQtfc2hwZ0adfhehag4sxkDw
+9L2h7wV8tHeRxr6K1bGeMKkTcvHjB/4slIyapv3TLE9f25gdHiqZbsvc/MUOklYE4omk/Fg1//Qj
+dAIAf+EsOE8AT4yessgkccbsPhXhRrnU0MJSJ+qLiCrcvE91qnZ+d3OMGuN6dNnzqnKrgnfcbwDu
+smnTunJ50ExAG+TKRJf14fPufbeP35eYOdbAycEDZCKljfoG0jm0Xf9ZKmccW4Emt4WB1ASfNcUV
+qSjlbjs6F0azdsa4/Wve7ewVp6B7ltym53a8kKyb/BBVUHec5nMHSKwSqACYwn7v/V1+LmdXzbkw
+ce7zElneeb2oGt3fTeYELOp5vvKO1ld3bjUvhca1jI6rAoZuVKZTJBblsSY/NvnbV7QnHpxF19gr
+ja/pKOQuv2MHcap+h17myj1iVhknXaKoVWjbQHZCmAcYTaixecF/KXPS7qieKArxsSZoi7AHNmL8
+dKy4pYGfSOyVChL7MhjDrgII5m5XSM5UIJ4Ujre/U1xIe9pAobA1bMpma8bvqOeElQRmZ9JC071a
+A7gwew8BU764H3zTlV9FQtRTWhKV6PXNSgcZgJbvwn2VQlr5uulnSuMSLcWYw8edNxbIhCkiUVrM
+BavQ8VF6Yi3M6h+k0wWneTP+2y49VPM8m1SZQx6f8Igad6QTfXcS2NaQolbmt6V73BdTHiFIqz6F
+Mq5FfdqJI86oo50d0AkOYg9xYzyITYkGnC91sfVsziL4C4KaSR3p+5wQufv25KH3NwgTdqWJZfTh
+RcFF19ZMEjo1A8pfhWzi5xn6qey3NyqjRx6U/fbhxLb7nTLNO0YwdJ8TksA0PK4+bu3hYwt0JlHr
+GlRmMVBYU+kXpmH0NvUrZT/1WlatU8OPDDM53KYPonvZb81fJdKb3j8HZ1sX9wZz01rslXMI4NXx
+MCs4tgVfjWBYNHgFlOTfND2D/ezGs/y96X5V67dr/m0wjXf/J6JfqeQrofuqTBaBcSmighZfnMjO
+YrNLV8pbjWza9zqzWT/fNS/ZOtpYTqxfYes39B7N8PX+fdq72wJSCb8wTxqEbDd4Kv9tHWx6B2D5
+K4OrEtVzZZanxSrcP1bf4Fgrj3Wh+y5ddxrYTJD5+iOqOVYpIgjvkIS4E60XJcQth+jMH0NgH2Q/
+CR12lgKcw09f28RpHdJPzzmQjaN0Qfh/4RvkQJl+UcEbOjRkdW7mwYTVHv0lmoBsHfdK45+HdEXD
+jYUB0FUT3TiVovZ+A0MN6KgaSFp3R6Jtvol24RmS54he6+7/FYcl0NJes+7jM/g5QOw5doyZ/Py7
+zj3ePw0HQsYa79uUiWtJJCdCHWimp8G2UeBZvvXE05zX2AX7BlR8Wi2TImO1RyNAClqt9F7BR2zx
+vFOddXJ+NC2LWI34AUiHMPlcSDicnSktoTw6vtPi0ksbzsMCAOgPfGZvOktPg/LMiMvLP/FN6pJo
+79UR3Ba5M1eJwtcw00c2tNsylmMKzLll4K5GfuGnB2otAbHgC75pCu699zKQhqyqo7MPBmvZuCGP
+OcE/kc3IODooMnLW6xPJu4Ry/CMCIZlbLKWbiokm15hO5o6cAlIhnmEl6Dxfmyx1hpyH/tzJog2l
+K0YR6hU1oLp1re8FwBMn7qa9AZf0LIVOYl3tuL9fsq0dqnvtY4sX5sgzOLRxJz09y19zQ9xVOuP+
+Jq7n/gdh49k86BgDrI+scU8dvPcz/Wdf1U8qpsHvWHcgWTPg39omex0+DSIQ4+ZwLZK423f7yNwx
+HEQZWFlYUhm8WCZ8JLipCnbQzToLKI5ad5WfTMZEa/z+x1F7Hfs6xlhYEJgEyhmvNwj3d93+dfZj
+T80o35voKaEUdsLaALt2L3KghZpgnEj7NlZvp57ClP7hBnc+QFKcxSDExE0h0mrai46FqRiBiKzt
+oxpjwOuJWEJ9BPhYx/fbddM45iB1ygJiyT8loDv5245u0mNXz7PDZITRoSIcd0EadJRuAeNfAGia
+ZrD//AcyI46En2xgHR6ixbDVMJD3myKMmz6kGplhlFlIcxVUS7NPl91/QX8IhaXjuLoQViGzDBqQ
+fX0x0FtnVi2oACvANM14XTKSqIRxbNkH8GdCV3dywx8IxBHA1lyoci3zKJ6aCmygr13kbwKuIsc6
+yTdopMisj4ZNTVzt9iLRmchCC3S62dPDyDMM8M++DCV+imNtBKyskFgnV4My/s7R8QB8VLuVnPpv
+n9WWnwgW0229IVJwQ7jHNdXokASAvfLal0qBBq4zljDv9mtPPHrvm69p1PPKoksLoIunBcNzC4OS
+Jzla7nBd1XbkUZceFhrQk0IsjrY8y/liogbTK/klqZvdNfIXNEGwkCzg1gqzx/Blie+ULbs6bEhA
+W+yzJbr5gEPaBsyrfER9ZAYwO2lqolxucH3Xu/VSyd+BXjqvRib4Ib9+io9wbEZLTB43qQGAtZmY
+IWKOH626B/vwsdprwUo0ShRyfcVV6/Z4hr6yP29g+I8EQe38VBDuiOkyJiGES8o5xOCHljWiaV7w
+07NQ0h3LP35IN6y2qsuoB9tjopO1TD85YFUPuwxMSZME0/sbUs0r0nEeXab9xRwpKdCC6FxJVxdF
+tD6sV4Ij/AF4n+ZWCu0P6O6VV/ITfMCuP+VkR5eJS5vBaEH1XJOXki+Z0h413p1v8hrL0fkcXnsk
+sQG25OVViH/3NEo2RS4C6E9sUaM1BJCegRLoyeGxuRPzPctn7onNIp0lNOutBJ77np8t4ZVuzYSh
+ObhBEcT4tG2tLYhh3YK4RFrRH1YY9oM5diPj9U4ttIlvdqt+hgrx/kFr1YgCracL6cgxqA7ApenT
+wtp7sZPU1tOr1X+hJakB9WvSq65qc8hk3ojmPV3xbR0E7pEgZi++R5YfubTdJBsiwZ8ScuKOoY0c
+iMgRjhr+4X7vDrGXV6FgwqJUvCUfV7HpiXa8htVlZYf77/37WhWxxs5AFLEhXX0qHEWLra/1OPhx
+Z446ufxCcbf+3f7GjWbdgO8NMJUZQkKhUNlbp8SCHApuVMpuEM0KZqDrKWHqb+h5ZSqyM2hIG1Zd
+vShLZEwMEHZuNG5Ar7TCOBkJO3uMkB7XJU3CjTFIHjoGgz5RcK4pykEBiQz67P1myyvOdVLY0ZAB
+RkyVO+Omx8HGs9diHzRpqJiVMByfSxTgYltZ5+WmrGM3GWu+2cL/SuhRyZRj3GBwBENH6kJhdzF3
+
+
+
+`pragma protect end_protected
+
+initial 
+	$timeformat(-12, 5, " ps", 10);
+
+//=============================================================
+// main process
+//=============================================================
+RandcRange rand_index;
+
+
+integer total_tp_num;
+integer work_num;
+integer i;
+initial begin
+	$readmemh("../hce.dat", data_tp);
+	unit_id = 0;
+	has_id = 1;
+	pre_req = 0;
+	nonce_right = 0;
+	tp_cnt = 0;
+	err_cnt = 0;
+	total_tp_num = `TEST_TP_NUM;
+	rand_index = new(0, `MAX_TP_NUM-1);
+	wait(rst_n == 0);
+	wait(rst_n == 1);
+	repeat(20) @(posedge clk);
+	cfg.set_dly_time(clk_period * 4);
+	cfg.debug = 0;
+
+
+	send_config(brc_id, `HCE_CFG_MISC_A, 32'h00);//enable tgt_en, enable return taskid 
+	has_id = 1;
+	repeat(40) @(posedge clk);
+	//test default task
+	`ifndef VCD
+	$display("TEST the default task!");
+	tp_cnt = 1022;
+		nop1;
+		pre_req = 1;
+		nop1;
+		pre_req = 0;
+		nop1;
+	wait(pre_done == 1);
+
+	send_config(brc_id, 8'h0d, data3[31:0]);
+	$display("31:0= %08h", data3[31:0]);
+	send_config(brc_id, 8'h0e, data3[63:32]);
+	send_config(brc_id, 8'h0f, data3[95:64]);
+	send_config(brc_id, 8'h10, data3[127:96]);
+	send_config(brc_id, 8'h11, data3[159:128]);
+	send_config(brc_id, 8'h12, data3[191:160]);
+	$display("191:160= %08h", data3[191:160]);
+//	send_config(brc_id, 8'h0c, 32'hee152818);
+	//repeat(50000)@(posedge clk);
+	hit_proc;
+	`endif
+
+	$display(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+	$display("\tEnable tgt compare");
+	$display(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+	for(work_num=0;work_num<total_tp_num; work_num=work_num+1)
+	begin
+		$display("======================== %0d =============================", work_num);
+		`ifdef NORAND
+		tp_cnt = work_num;
+		`else
+		assert(rand_index.randomize());
+		tp_cnt = rand_index.value;
+		`endif
+		#0;
+		$display("tp = %0d: middata = %h, data2 = %h, gold_nonce=%h", tp_cnt, mid, data2, golden_nonce );
+		init_nonce = golden_nonce - `HCE_FULL_PIPE_LATENCY*`HCE_CORE_CNT;
+		tgt_6_reg = tgt_6 + 1;
+
+		$display("[NOTE]\ttp =%0d, golden_nonce=%x, init_nonce=%x", tp_cnt, golden_nonce, init_nonce);
+		nop1;
+		pre_req = 1;
+		nop1;
+		pre_req = 0;
+		nop1;
+		send_hce_data(brc_id, {1'b0, tp_cnt[1:0], 1'b0, 4'h0});
+
+		hit_proc;
+		if (work_num%2==0)
+		begin
+			$display("Stop curent task!");
+			send_config(brc_id, `HCE_CFG_MISC_A, 32'h00); //stop cur_task
+		end
+
+		repeat(10) @(posedge clk);
+	end //for(work_num=0;work_num<total_tp_num; work_num=work_num+1)
+
+	send_config(brc_id, `HCE_CFG_MISC_A, 32'h02);//disable tgt_en, enable return taskid, it will stop the last task
+	has_id = 1;
+	tp_cnt = 0;
+	repeat(40) @(posedge clk);
+	$display(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+	$display("\tDisable tgt compare");
+	$display(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+
+	for(work_num=0;work_num<total_tp_num; work_num=work_num+1)
+	begin
+		$display("=======================%0d============================", work_num);
+		assert(rand_index.randomize());
+		tp_cnt = rand_index.value;
+		#0;
+		$display("tp = %0d: middata = %h, data2 = %h, gold_nonce=%h", tp_cnt, mid, data2, golden_nonce );
+		init_nonce = golden_nonce - `HCE_FULL_PIPE_LATENCY*`HCE_CORE_CNT;
+		tgt_6_reg = tgt_6-1;
+		$display("[NOTE]\ttp = %0d, golden_nonce=%x, init_nonce=%x", tp_cnt, golden_nonce, init_nonce);
+		if (work_num == total_tp_num/2) 
+		begin
+			send_config(brc_id, `HCE_CFG_MISC_A, 32'h06); //disable return taskid, rpt_length = 0;
+			has_id = 0;
+		//$fsdbDumpvars(0, TB);
+		//$fsdbDumpon;
+		end
+		nop1;
+		pre_req = 1;
+		nop1;
+		pre_req = 0;
+		nop1;
+		send_hce_data(brc_id, {1'b0, tp_cnt[1:0], 1'b0, 4'h0});
+
+		hit_proc;
+
+		if (work_num%2==1)
+		begin
+			$display("Stop curent task!");
+			if (work_num >= total_tp_num/2) 
+				send_config(brc_id, `HCE_CFG_MISC_A, 32'h06); //disable return taskid, rpt_length = 0;
+			else 
+				send_config(brc_id, `HCE_CFG_MISC_A, 32'h02);//disable tgt_en, enable return taskid, it will stop the last task
+		end
+
+		repeat(10) @(posedge clk);
+	end //for(work_num=0;work_num<total_tp_num; work_num=work_num+1)
+
+
+	$display("\n*************************************************");
+	if (err_cnt>0)
+		$display("Errors: %0d, Please debug!", err_cnt);
+	else
+		$display("All Passed!");
+	$display("*************************************************\n");
+	
+	$finish;
+end//initial		
+
+
+`pragma protect begin_protected
+`pragma protect encrypt_agent="NCPROTECT"
+`pragma protect encrypt_agent_info="ncprotect	12.20-p001	 Jul 15, 2015 at 14:59:21 CST"
+`pragma protect data_keyowner="Cadence Design Systems."
+`pragma protect data_keyname="CDS_DATA_KEY"
+`pragma protect data_method="AES256-CBC"
+`pragma protect encoding = (enctype = "BASE64", line_length = 76, bytes = 816)
+`pragma protect data_block
+e;]geUHR^m;;;;;;u8jADU9BsuBbYQm/FSSNl5mTJx0oRXe3MuYklxRjLApEQMwpUIJmlxk7i0Bq
+lWVxW4uZArQi0p3gspTuLDpvjRvFUYY8bxQj/LjtGMmGnAKIiJOypqT9QRWigSHYPnSlSCjCQkSm
+kXvyHRfchzI3MPYOUv/xQSCGQFFKpqamo/0zvAyOgYcelNxygaXygTO30vkvkiF/P0tbCfRM8HdP
+CYhbX8ph7clOPQz8/eNrJy3OcdueN1qgAAdKIsZJ1uWaoG+EUtZ1Kn7h9ZEfhpJRLtdYfBmB3fhm
+L61ewxNesYwpfmhZxt0TIlTbM8j6BUlFzktASC5e9oTH2W+tHVsgufEo/OlA7RE8WWY4ffa7t2mB
+5CtCiRQg4AvHphUMBrfrabPDW4bzBsCFOdDLZtLFoF4DCZGQ7UguTQv6ZDtAc3QxhVRs1OyzMvWL
+L508MzgnaqAapbIbRvTiGaowQ1HKI72Rx2+MKcSmrTajZvHGlNreK4JpzYX58EP2UBap9vvP9GWw
+B7YGWQYroYv0fk2qetflm5xeo6Kh7YGHYmvidNxy6jfArygFTJPV83IHcQCbIvFJdtB9ThyFENTn
+BJQvFc27OXFxSCAwu1Ps2C7fjD5a9z9+M+cHByJ/zRdvkvVECQoxK1yRrcRQiRD0v6vkat5/6Y5p
+0o2t06ksMRFlRprQAGA77a+4ORZ6BGSN3euFsiRQFXcVihQsg914UU8AvaBjuR6Iv5MgTtEcy4NK
+4ppjM3A/fffbVEpe+/IAqL8M4c6Ow14O86zmUoCW+z6FX1AAMDn/334PrL/3u2c+taClDnDChWjZ
+PrzmOoTMy8ss9W6zA+PGCViCWP5DcTX5qhZgIzSCRaC6br7f+2Jj22GnhH5/0tBrnxLiSK9KrGpM
+2RvYmhc5PRNsoMZXzxzG6qdJGvEL+NWEonmgEMGua6+u+SpmR7ztiUdCeHlhtQPLQcPMfxNWRSip
+ew4wJXcRcNpkEn1fFfOfPBbbvQ02xhZW8BN5sVnOB1bEzFiRBPfoIfcE2H0Ctt8/sH9IpW+8NKZx
+5xB742HN81NLfQTBapdRSdqJjffPJNh9HHn7QjGk
+
+
+`pragma protect end_protected
+
+
+`ifdef FSDB
+initial begin
+	`ifdef GATE
+		$fsdbDumpfile("hce_gate.fsdb");
+	`else
+		$fsdbDumpfile("verilog.fsdb");
+	`endif
+	$fsdbDumpvars(0, TB.u_hce);
+	$fsdbDumpon;
+end	
+`endif
+
+
+`ifdef VCD
+initial begin
+	$display("Will dump VCD file");
+	#1;
+	wait(TB.u_hce.u_hce_core.u_hce_stage1.u_hce_mid_gen_61.mid_up === 1'b1);
+	$display("dump vcd file: hce.vcd");
+	$dumpfile("./hce.vcd");
+	$dumpvars(0, TB.u_hce);
+	$dumpon;
+	$display("Freq: %0f", F_CORE);
+//	$display("VCD FILE: %0s", {dumpfile, ".vcd"});
+//	$display("VCD FILE: %0s", vcdfile);
+	$display("VCD HIER: %0s", "TB.u_hce");
+	$display("Start to dump VCD file at: %0t", $time);
+	`ifdef DLY_VCD
+	//repeat(125) @(posedge clk);
+	repeat(150) @(posedge clk);
+	`else
+	repeat(120) @(posedge clk);
+	//wait(TB.u_hce.u_hce_core.u_hce_p2s_tx.tx_start === 1'b1);
+	wait(TB.u_hce.u_hce_core.u_hce_p2s_tx.tx_vld === 1'b1);
+	`endif
+	#10;
+	$dumpoff;
+	$display("End to dump VCD file at: %0t", $time);
+	#10;
+	$finish;
+
+
+	//#200000;
+	//$dumpoff;
+end	
+`endif
+
+`ifdef SDF 
+initial begin
+	$sdf_annotate(SDF_FILE, TB.u_hce, ,"hce_sdf.log", "MAXIMUM",,);
+end
+`endif
+
+endmodule
+
+
+`pragma protect begin_protected
+`pragma protect encrypt_agent="NCPROTECT"
+`pragma protect encrypt_agent_info="ncprotect	12.20-p001	 Jul 15, 2015 at 14:59:21 CST"
+`pragma protect data_keyowner="Cadence Design Systems."
+`pragma protect data_keyname="CDS_DATA_KEY"
+`pragma protect data_method="AES256-CBC"
+`pragma protect encoding = (enctype = "BASE64", line_length = 76, bytes = 7952)
+`pragma protect data_block
+EOp]@R]_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
+
+
+`pragma protect end_protected
+

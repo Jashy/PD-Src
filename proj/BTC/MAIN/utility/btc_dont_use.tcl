@@ -1,0 +1,8 @@
+set_dont_use [get_lib_cells */INV_X0P5* ]
+set_dont_use [get_lib_cells */INV_X0P7* ]
+set_dont_use [get_lib_cells */INV_X1F_* ]
+set_dont_use [get_lib_cells */INV_X1N_* ]
+set_dont_use [get_lib_cells */INV_X1R_* ]
+#-#-  set_dont_use [get_lib_cells */WELLANTENNA2* ]
+set_dont_use [get_lib_cells */DLY* ]
+set_dont_use [get_lib_cells */BUFH* ]

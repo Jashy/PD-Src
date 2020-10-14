@@ -1,0 +1,28 @@
+#!/bin/csh -f
+source /proj/HJ/WORK/data/setup/mycshrc_n
+source ~/.mycshrc
+
+set current_dir		= `pwd`
+set FREQ		= "600"
+set golden_netlist	= "/proj/BTC/WORK/arckeonw/ICC/TOP/floorplan/NETLIST/LKB11_modify_PLL_IO.v"
+set golden_sdc		= "/proj/BTC/from_customer/20150815/20150815_top_final_netlist/TOP_FDI/LKB11.sdc"
+set floorplan_mdb	= "/proj/BTC/WORK/arckeonw/ICC/TOP/floorplan/MDB_LKB11"
+set floorplan_cell	= "VNET_20150901_fp"
+set comment		= "8M 3442x3442 VNET_20150901" 
+
+echo "$current_dir" >> ../.trial.info
+echo "	NETLIST(golden):${golden_netlist}" >> ../.trial.info
+echo "	SDC(golden):${golden_sdc}" >> ../.trial.info
+echo "	FREQ:${FREQ}MHz" >> ../.trial.info
+echo "	MDB:${floorplan_mdb}" >> ../.trial.info
+echo "	CELL:${floorplan_cell}" >> ../.trial.info
+echo "	COMMENT:${comment}" >> ../.trial.info
+
+################################################################################
+#P&R
+mkdir -p LOG Runtime Ready REPORT OUTPUT
+set Time = `date +%y-%m-%d_%H:%M`
+sed -i "s#_FP_MDB_#${floorplan_mdb}#g" ./flow_btc/all_flow.tcl
+sed -i "s#_FP_CELL_#${floorplan_cell}#g" ./flow_btc/all_flow.tcl
+icc_shell -f ./flow_btc/all_flow.tcl		|& tee ./LOG/ICC_run_all_${Time}.log	; #change sdc in scenario generation step if necessary
+
