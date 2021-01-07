@@ -1,0 +1,19 @@
+#if ( `uname` == "Linux" ) then
+#setenv  SYNOPSYS                /apps/synopsys/icc_vC-2009.06
+#setenv SYNOPSYS 		/apps/synopsys/icc_vB-2008.09-SP5-2
+#setenv SYNOPSYS 		/apps/synopsys/icc_vD-2010.03-SP5	
+#setenv SYNOPSYS 		/apps/synopsys/icc_vH-2013.03-SP5
+#setenv SYNOPSYS 		/apps/synopsys/icc_vI-2013.12-SP5
+#setenv SYNOPSYS 		/apps/synopsys/icc_vJ-2014.09-SP2
+#setenv SYNOPSYS		/apps/synopsys/icc_vC-2009.06-SP5
+#setenv SYNOPSYS                /apps/synopsys/icc_vD-2010.03
+setenv SYNOPSYS                /apps/synopsys/icc_vJ-2014.09-SP2
+
+#endif
+setenv PATH                     ${SYNOPSYS}/bin:${PATH}
+setenv PATH                     ${SYNOPSYS}/amd64/syn/bin:${PATH}
+source  /apps/setenv_license.csh
+
+#set DATE = `date +%m%d_%H%M`
+
+#icc_shell -f /filer/home/jasons/useful/proc.tcl | tee ICC_{$DATE}.log

@@ -1,0 +1,9 @@
+##############################
+# 
+set h_nets ""
+
+set h_nets [concat $h_nets [get_attr whydra_0/CKDFA full_name]]
+set h_nets [concat $h_nets [get_attr whydra_0/CKFA full_name]]
+set h_nets [concat $h_nets [get_attr whydra_0/CKFD1 full_name]]
+set h_nets [concat $h_nets [get_attr whydra_0/CKSDFEWS_X1 full_name]]
+

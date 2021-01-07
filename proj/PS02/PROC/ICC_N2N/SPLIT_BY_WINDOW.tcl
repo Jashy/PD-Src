@@ -1,0 +1,62 @@
+####################################################################################################
+# PROGRAM     : SPLIT_BY_WINDOW
+# DESCRIPTION : split loading by defined window
+# USAGE       : SPLIT_BY_WINDOW $pin_name $buf_ref -window {...} -eco_string $eco_string
+####################################################################################################
+proc SPLIT_BY_WINDOW { args } {
+
+  parse_proc_arguments -args $args results
+
+  global ECO_STRING
+
+  set pin_name  $results(pin_name)
+  set split_buf $results(buf_ref)
+  set window    $results(-window)
+  set eco_string $results(-eco_string)
+
+  set window_llx [ lindex $window 0 ]
+  set window_lly [ lindex $window 1 ]
+  set window_ux [ lindex $window 2 ]
+  set window_uy [ lindex $window 3 ]
+
+  set net [ get_nets -of $pin_name -seg -top]
+  set net_name [get_attr $net full_name]
+
+  set split_pins ""
+
+  foreach_in_collection pin [ get_loads $net ] {
+    set pin_bbox [ get_attr $pin bbox]
+    set pin_llx [ lindex [ lindex $pin_bbox 0 ] 0 ]
+    set pin_lly [ lindex [ lindex $pin_bbox 0 ] 1 ]
+    set pin_urx [ lindex [ lindex $pin_bbox 1 ] 0 ]
+    set pin_ury [ lindex [ lindex $pin_bbox 1 ] 1 ]
+    set load_name [ get_attr $pin full_name ]
+    if { $pin_llx <= $window_llx } { continue }
+    if { $pin_lly <= $window_lly } { continue }
+    if { $pin_urx >= $window_ux } { continue }
+    if { $pin_ury >= $window_uy } { continue }
+    set split_pins [ concat $split_pins $load_name ]
+  }
+
+  set location [ lindex [ get_attr [ get_pins $pin_name ] bbox] 0 ]
+
+  set tmp_ECO_STRING $ECO_STRING
+
+  set ECO_STRING $eco_string
+
+  set new [SPLIT_NET $pin_name $split_pins $split_buf -location $location ]
+
+  set ECO_STRING $tmp_ECO_STRING
+  
+  return $new
+}
+
+define_proc_attributes SPLIT_BY_WINDOW \
+ -info "split loading by defined window" \
+ -define_args {\
+  { pin_name "Driver pin" "pin_name" string required }
+  { buf_ref  "Split buffer" "buf_ref" string required }
+  { -window  "Cells in Window will be split" "window" string required }
+  { -eco_string  "eco_string" "eco_string" string required }
+ }
+

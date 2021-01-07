@@ -1,0 +1,82 @@
+#!/bin/csh
+
+set ready = /proj/Pezy-1/WORK/carson/ptile_top/ICC/ptile_top.run/ptile_top_1123.gds
+
+
+if ( -e ./lock ) then
+  echo "**************** Directory is locked, Skip ****************"
+  exit
+endif
+
+touch lock
+
+while(!(-e $ready))
+echo "waiting $ready! "
+sleep 300
+end
+
+set lib       = ptile_top
+set cellname  = ptile_top
+set ingds     = /proj/Pezy-1/WORK/carson/ptile_top/ICC/ptile_top.run/ptile_top_1123.gds
+set outgds    = ./ptile_top.gds
+set cell      = ptile_top
+#source /proj/Pezy-1/TEMPLATES/SETUPS/OPUS
+source /proj/Pezy-1/WORK/carson/ptile_top/OPUS/20111122a/OPUS
+
+## set file paths
+set opus_refl  = "tcbn45gsbwp12t  tcbn45gsbwp12thvt  tcbn45gsbwp12tlvt MEM_ref"
+set opus_cdsl  = /proj/Pezy-1/WORK/seanz/ARM40G/OPUS/cds/cds.lib
+#set opus_cdsl  = /proj/Pezy-1/WORK/aukoz/pub/opus/cds.lib
+set opus_disp  = /proj/Pezy-1/LIB/TechFile/cadence/display.drf
+set opus_lmap  = /proj/Pezy-1/LIB/TechFile/cadence/Virtuoso/mapfile/virtuoso_45nm_1P9M_6X2Z_13_1a.map
+set opus_cmap  = ""
+set opus_tech  = /proj/Pezy-1/LIB/TechFile/cadence/Virtuoso/techfile_cdb/virtuoso_cdb_45nm_1P9M_6X2Z_13_1a.tf
+set opus_skill = /proj/Pezy-1/WORK/seanz/OPUS/cds/dodpo.il
+set opus_itmp  = /proj/Pezy-1/WORK/seanz/OPUS/cds/pipo_strmin.template
+set opus_otmp  = /proj/Pezy-1/WORK/seanz/OPUS/cds/pipo_strmout.template
+
+##generate strm_cds.map
+#echo "MASKD2834 layout $cellname" > opus_cellmap
+## generate cds.lib
+echo "INCLUDE    $opus_cdsl"                                     > cds.lib
+echo ""                                                         >> cds.lib
+
+## copy display.drf
+\cp  -rf ${opus_disp} .
+
+## run stream-in
+set log   = "PIPO_IN_${cell}.LOG"
+cat ${opus_itmp} \
+        | sed "s#__GDS__#${ingds}#" \
+        | sed "s#__LIB__#${lib}#" \
+        | sed "s#__TECH__#${opus_tech}#" \
+        | sed "s#__LOG__#${log}#" \
+        | sed "s#__CMAP__#${opus_cmap}#" \
+        | sed "s#__LMAP__#${opus_lmap}#" \
+        | sed "s#__REF__#${opus_refl}#" \
+                                                                 > pipo_strmin.run
+pipo strmin pipo_strmin.run 
+
+## run opus skill
+#echo 'load("'${opus_skill}'")'                                   > opus.run
+#echo "ARM926EJS_MERGE_DOD("'"'${lib}'"'")"                             >> opus.run
+#echo 'exit'                                                      >> opus.run
+#layout -log CDS_MERGE.LOG -nograph -restore opus.run
+
+## run stream-out
+set log   = "PIPO_OUT_${cell}.LOG"
+cat ${opus_otmp} \
+        | sed "s#__LIB__#${lib}#" \
+        | sed "s#__CELL__#${cell}#" \
+        | sed "s#__GDS__#${outgds}#" \
+        | sed "s#__LOG__#${log}#" \
+        | sed "s#__LMAP__#${opus_lmap}#" \
+                                                                > pipo_strmout.run
+pipo strmout pipo_strmout.run 
+
+if (-e ${outgds}) then
+gzip ${outgds}
+touch gds_ready
+else
+touch error_gds
+endif

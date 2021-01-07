@@ -1,0 +1,2 @@
+preroute_standard_cells -mode net -nets {VDD1V_MEM} -no_routing_outside_working_area -port_filter {VDDO} -port_filter_mode select_PG_type -route_pins_on_layer M2 -extension_gap 15 -max_fanout 3 -route_type {Signal Route}
+preroute_standard_cells -mode net -nets {VDD} -no_routing_outside_working_area -port_filter {BIASNW} -port_filter_mode select_PG_type -route_pins_on_layer M2 -extension_gap 15 -max_fanout 3 -route_type {Signal Route}

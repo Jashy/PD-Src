@@ -1,0 +1,12 @@
+if ( `uname` == "Linux" ) then
+#setenv  SYNOPSYS                /apps/synopsys/icc_vC-2009.06
+#setenv SYNOPSYS 		/apps/synopsys/icc_vB-2008.09-SP5-2
+#setenv SYNOPSYS 		/apps/synopsys/icc_vE-2010.12-SP2
+#setenv SYNOPSYS		/apps/synopsys/icc_vC-2009.06-SP5
+#setenv SYNOPSYS                /apps/synopsys/icc_vD-2010.03-SP5
+setenv SYNOPSYS                /apps/synopsys/icc_vF-2011.09-SP3
+
+endif
+setenv PATH                     ${SYNOPSYS}/bin:${PATH}
+setenv PATH                     ${SYNOPSYS}/amd64/syn/bin:${PATH}
+unsetenv LD_ASSUME_KERNEL

@@ -1,0 +1,3 @@
+source ./tcl/run_clock_fishbone_netlist.tcl
+source ./tcl/run_clock_fishbone_physical.tcl
+source ./tcl/route_clk.tcl

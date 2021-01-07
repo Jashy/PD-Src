@@ -1,0 +1,21 @@
+duplicate_driver.tcl :duplicate_driver [list]  
+split_clock.tcl :split_clock driver_pin ref_name [list]
+REWIRE.tcl : REWIRE driver_pin load_pin
+SPLIT_NET.tcl :SPLIT_NET <net_name> <pin_name_list> <lib_cell_name>
+INSERT_BUFFER.tcl :INSERT_BUFFER <pin_name_list> <lib_cell_name> [-location {x1 y1}]
+add_multi_buffer_location.tcl: add_multi_buffer_location <root pin (not pin list)> <new_cell_name_postfix> <cell ref name> <insert cell number> [<the distance from first inserted cell to root pin>]
+add_multi_buffer_skew.tcl: add_multi_buffer_skew <root pin (not pin list)> <new_cell_name_postfix> <cell ref name> <insert cell number>
+add_multi_buffer_distance.tcl: add_multi_buffer_distance <root pin (not pin list)> <new_cell_name_postfix> <cell ref name> <insert cell number> <cell contral number of the same group (is not cell nunberis a contral number) > <step of different groups>
+
+########################add by jansenc
+########
+split_clock_center.tcl   USEAGE: insert one cell to split_loading_pin's center point not gravity point
+	split_clock_center_tall  <root pin>      <new_cell_name_postfix>      <cell ref name>     <spilt_loading_pin_list>
+
+#######
+add_multi_buffer_tall.tcl USEAGE: add multy buffer from driver to loading. whatever you give the dirve_output_pin or loading_input_pin. The insert cell named as this
+		Derive   ======> Loading
+		N0       ======> Nn
+	add_multi_buffer_tall     <root pin>        <new_cell_name_postfix>     < ref_name>       <ref_cell_drive_distance (floating number)>         <distance from dirve_cell (optional parameters)>
+
+

@@ -1,0 +1,25 @@
+#set path=($path /apps/cadence/EDI09.13/bin /apps/cadence/IC06.15.011/tools/dfII/bin /apps/cadence/IC06.15.011/tools.lnx86/dfII/bin /apps/cadence/ETS91USR2/bin /apps/cadence/EXT_10.1/bin)
+##setenv CDS_LICENSE 28200@sanjose:5280@lnx-shtrn8
+###IC615 merge
+##set path=($path /apps/cadence/EDI09.13/bin /apps/cadence/IC06.15.011/tools/dfII/bin /apps/cadence/ETS91USR2/bin /apps/cadence/EXT_10.1/bin)
+#setenv OA_HOME /apps/cadence/IC06.15.011/oa_v22.41.018
+#setenv CDSHOME /apps/cadence/IC06.15.011
+#setenv CDS_LIC_FILE 5280@10.1.1.11:5280@10.10.1.13:5280@10.10.1.14:5280@10.10.1.15:5280@10.10.1.21:5280@10.10.1.22:5280@10.10.1.23:5280@10.10.1.27:5280@10.10.1.35
+#setenv CDS_LIC_FILE 5280@rhode:5280@lnx-shtrn8:5280@mobile:5280@missouri:5280@birmingham:$CDS_LIC_FILE
+#setenv CDS_AUTO_64BIT ALL
+
+
+### ICADV12.10.060###
+set path=($path /apps/cadence/EDI09.13/bin /apps/cadence/ICADV12.10.060/tools/dfII/bin /apps/cadence/ICADV12.10.060/tools.lnx86/dfII/bin /apps/cadence/ETS91USR2/bin /apps/cadence/EXT_10.1/bin)
+#setenv CDS_LICENSE 28200@sanjose:5280@lnx-shtrn8
+##ICADV12.10.060 merge
+#set path=($path /apps/cadence/EDI09.13/bin /apps/cadence/IC06.15.011/tools/dfII/bin /apps/cadence/ETS91USR2/bin /apps/cadence/EXT_10.1/bin)
+setenv OA_HOME /apps/cadence/ICADV12.10.060/oa_v22.43.028
+setenv CDSHOME /apps/cadence/ICADV12.10.060
+setenv CDS_LIC_FILE 5280@10.1.1.11:5280@10.10.1.13:5280@10.10.1.14:5280@10.10.1.15:5280@10.10.1.21:5280@10.10.1.22:5280@10.10.1.23:5280@10.10.1.27:5280@10.10.1.35
+setenv CDS_LIC_FILE 5280@rhode:5280@lnx-shtrn8:5280@mobile:5280@missouri:5280@birmingham:$CDS_LIC_FILE
+setenv CDS_AUTO_64BIT ALL
+source /apps/setenv_license.csh
+
+setenv date `date +%m%d`
+virtuoso -log ./$date.log

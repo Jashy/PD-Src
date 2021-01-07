@@ -1,0 +1,7 @@
+write_floorplan -placement std_cell -no_bound -no_voltage_area -no_plan_group -no_placement_blockage -no_route_guide -objects {u_pcie_ocp_pipe_pipe_axi_axi_reg_cap_vendevid_r_reg_15_ u_pcie_ocp_pipe_pipe_axi_axi_reg_cap_subsysid_r_reg_15_}  ./pl.tcl
+
+write_route -output route.tcl -nets {u_pcie_ocp_pipe_pipe_axi_axi_reg_cap_vendevid_r_reg_15__D_FIX_HOLD_0916_n0 n25888 n902 u_pcie_ocp_pipe_pipe_axi_axi_reg_cap_subsysid_r_reg_15__D_FIX_HOLD_0916_n0 u_pcie_ocp_pipe_pipe_axi_axi_reg_cap_vendevid_r_reg_15__SI_FIX_HOLD_0916_n0 n26558 u_pcie_ocp_pipe_pipe_axi_axi_reg_cap_subsysid_r_reg_15__SI_FIX_HOLD_0916_n0 n23600 n21603 u_pcie_ocp_pipe_pipe_axi_axi_reg_cap_vendevid_r_15_ n5788 u_pcie_ocp_pipe_pipe_axi_axi_reg_cap_subsysid_r_15_ } -skip_route_guide
+
+source ./eco.tcl
+source ./pl.tcl
+source ./route.tcl

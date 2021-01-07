@@ -1,0 +1,112 @@
+######################################################################################
+# Example UPF for block
+#  - 1.0V block
+#  - Updated power connection for memory
+######################################################################################
+
+# Define power nets
+create_supply_net VDD1V
+create_supply_net VDD1V_MEM 
+create_supply_net VDD1V_PD07 
+create_supply_net VSS 
+
+create_supply_port VDD1V 
+create_supply_port VDD1V_MEM
+create_supply_port VSS 
+
+connect_supply_net VDD1V -port VDD1V 
+connect_supply_net VDD1V_MEM -port VDD1V_MEM
+connect_supply_net VSS -port VSS 
+ 
+# Create power domain and switch rule
+create_power_domain PD_07 
+create_power_switch SW_PD_07_PRE -domain PD_07 \
+                           -input_supply_port {VDDG VDD1V} -output_supply_port {VDD VDD1V_PD07}  \
+                           -control_port {SLEEP SCPRE_PD_07} \
+                           -ack_port {SLEEPOUT SCPRE_OUT_PD_07} \ 
+                           -on_state {PD07_on_state_pre VDDG {!SLEEP}} \
+ 
+create_power_switch SW_PD_07_ALL -domain PD_07 \
+                           -input_supply_port {VDDG VDD1V} -output_supply_port {VDD VDD1V_PD07}  \
+                           -control_port { SLEEP SCALL_PD_07 } \
+                           -ack_port {SLEEPOUT SCALL_OUT_PD_07} \ 
+                           -on_state {PD07_on_state_all VDDG {!SLEEP}} 
+
+map_power_switch SW_PD_07_PRE -domain PD07 -lib_cells HEADBUF32_X2M_A8TR_C34 
+map_power_switch SW_PD_07_ALL -domain PD07 -lib_cells HEADBUF32_X2M_A8TR_C34 
+
+set_domain_supply_net PD_07  -primary_power_net VDD1V_PD07 -primary_ground_net VSS 
+ 
+# Memory connection
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_24/STU_MEM_R_24/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_20/STU_MEM_R_20/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_19/STU_MEM_R_19/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_26/STU_MEM_R_26/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_25/STU_MEM_R_25/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_14/STU_MEM_R_14/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_11/STU_MEM_R_11/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_16/STU_MEM_R_16/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_34/STU_MEM_R_34/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_21/STU_MEM_R_21/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_30/STU_MEM_R_30/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_15/STU_MEM_R_15/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_29/STU_MEM_R_29/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_36/STU_MEM_R_36/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_35/STU_MEM_R_35/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_13/STU_MEM_R_13/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_31/STU_MEM_R_31/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_37/STU_MEM_R_37/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_12/STU_MEM_R_12/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_27/STU_MEM_R_27/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_33/STU_MEM_R_33/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_23/STU_MEM_R_23/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_32/STU_MEM_R_32/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_22/STU_MEM_R_22/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_28/STU_MEM_R_28/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_18/STU_MEM_R_18/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_17/STU_MEM_R_17/u0/u0/VDDCE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_10/STU_MEM_R_10/u0/u0/VDDCE }  
+
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_24/STU_MEM_R_24/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_20/STU_MEM_R_20/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_19/STU_MEM_R_19/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_26/STU_MEM_R_26/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_25/STU_MEM_R_25/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_14/STU_MEM_R_14/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_11/STU_MEM_R_11/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_16/STU_MEM_R_16/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_34/STU_MEM_R_34/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_21/STU_MEM_R_21/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_30/STU_MEM_R_30/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_15/STU_MEM_R_15/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_29/STU_MEM_R_29/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_36/STU_MEM_R_36/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_35/STU_MEM_R_35/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_13/STU_MEM_R_13/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_31/STU_MEM_R_31/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_37/STU_MEM_R_37/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_12/STU_MEM_R_12/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_27/STU_MEM_R_27/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_33/STU_MEM_R_33/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_23/STU_MEM_R_23/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB2/RB_STU_MEM_R_32/STU_MEM_R_32/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_22/STU_MEM_R_22/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB1/RB_STU_MEM_R_28/STU_MEM_R_28/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_18/STU_MEM_R_18/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_17/STU_MEM_R_17/u0/u0/VDDPE }  
+connect_supply_net VDD1V_MEM -ports { RAM_USB0/RB_STU_MEM_R_10/STU_MEM_R_10/u0/u0/VDDPE }  
+
+# Create power state table
+add_port_state VSS -state {ground 0}
+
+add_port_state VDD1V \
+               -state {act_state 0.95} \
+               -state {off_state off}
+
+add_port_state VDD1V_MEM \
+               -state {act_state 0.95} \
+               -state {off_state off}
+
+create_pst USB_pst  -supplies           {VSS    VDD1V      VDD1V_MEM}
+add_pst_state mode1 -pst USB_pst -state {ground act_state  act_state}
+add_pst_state mode2 -pst USB_pst -state {ground off_state  act_state}

@@ -1,0 +1,22 @@
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library t1hp256kx64milr_c071129
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library t1hp32kx64milr_c071129
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda1152x8m16
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda1192x16m4
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda1248x24m8
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda1896x28m4
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda1896x64m4
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda192x80m4
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda232x16m4
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda256x24m4
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda3072x8m16
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda3792x16m8
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda3792x18m8
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda3792x24m8
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda3792x28m8
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda3792x32m8
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda384x16m8
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda472x80m4
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda488x64m4
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda64x127m4
+set_operating_conditions -analysis_type on_chip_variation -max ss1p08vm40c -min ss1p08vm40c -library ts1n65lpeda64x16m4
+

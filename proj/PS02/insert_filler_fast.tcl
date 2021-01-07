@@ -1,0 +1,30 @@
+
+# FILLECOCAP6_A8TR FILLECOCAP12_A8TR FILLECOCAP24_A8TR FILLECOCAP48_A8TR 
+
+set REPORTS_DIR         "."
+
+set MW_R_POWER_NET      "VDD"
+set MW_R_GROUND_NET     "VSS"
+
+set pn  $MW_R_POWER_NET
+set rgn $MW_R_GROUND_NET
+
+set_host_options  -max_cores 16 -num_processes 16 localhost
+
+set RVT_FILLER   "FILL128_WO_M1_A8TR FILL64_WO_M1_A8TR FILL32_WO_M1_A8TR FILL16_WO_M1_A8TR FILL8_WO_M1_A8TR FILL4_WO_M1_A8TR FILL2_WO_M1_A8TR FILL1_WO_M1_A8TR"
+set LVT_FILLER   "FILL128_WO_M1_A8TL FILL64_WO_M1_A8TL FILL32_WO_M1_A8TL FILL16_WO_M1_A8TL FILL8_WO_M1_A8TL FILL4_WO_M1_A8TL FILL2_WO_M1_A8TL FILL1_WO_M1_A8TL"
+set SLVT_FILLER  "FILL128_WO_M1_A8TS FILL64_WO_M1_A8TS FILL32_WO_M1_A8TS FILL16_WO_M1_A8TS FILL8_WO_M1_A8TS FILL4_WO_M1_A8TS FILL2_WO_M1_A8TS FILL1_WO_M1_A8TS"
+set HVT_FILLER   "FILL128_WO_M1_A8TH FILL64_WO_M1_A8TH FILL32_WO_M1_A8TH FILL16_WO_M1_A8TH FILL8_WO_M1_A8TH FILL4_WO_M1_A8TH FILL2_WO_M1_A8TH FILL1_WO_M1_A8TH"
+
+## Set Vt type
+source /proj/onepiece3/TEMPLATE/scripts_2015.04.21_PS02/scripts/ICC/set_vt_type.tcl
+set_vt_type 
+source -e ./set_vtType.tcl
+
+## Insert std Filler cells
+insert_stdcell_filler -respect_overlap \
+   -ignore_soft_placement_blockage \
+   -connect_to_power $pn -connect_to_ground $rgn
+
+## Remove Vt type
+source -e ./remove_vtType.tcl

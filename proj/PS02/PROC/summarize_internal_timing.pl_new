@@ -1,0 +1,87 @@
+#!/usr/bin/perl
+
+$job_list = "lt_cbest_hold      ml_cbest_hold      wc_cworst_hold     lt_cworst_hold    ml_cworst_hold     wcl_cworst_hold    wc_cworst_setup   wcl_cworst_setup " ;
+
+#$job_list = "lt_cbest_hold lt_cworst_hold lt_rcbest_hold lt_rcworst_hold ml_cbest_hold ml_cworst_hold ml_rcbest_hold ml_rcworst_hold wc_cbest_hold wc_cworst_hold wc_cworst_setup wcl_cworst_setup" ;
+@job_list = split (/[\s\n]+/, $job_list ) ;
+$pmode_list = "normal dc_scan_capture ac_scan_capture scan_shift bistr mbist amt normal_misc jtag" ;
+@pmode_list =  split (/[\s\n]+/, $pmode_list) ;
+
+foreach $job ( @job_list ) {
+  foreach $pmode ( @pmode_list ) {
+  	$violation_count{$pmode,$job} = "" ;
+  	$worst_slack{$pmode,$job} = "" ;
+  }
+}
+$work_dir = "./" ;
+foreach $file ( split( "\n", `find $work_dir` ) ) {
+  if( $file =~ /(normal|amt|jtag|normal_misc|dc_scan_capture|ac_scan_capture|scan_shift|bistr|mbist)-mode\/(lt_cbest_hold|ml_cbest_hold|wc_cworst_hold|wcl_cworst_setup|lt_cworst_hold|ml_cworst_hold|wcl_cworst_hold|wc_cworst_setup|)\/alchip_report\/report_timing.rep.summary$/) {
+    $pmode = $1;
+    $job = $2 ;
+    $current_violation_count = "" ;
+    $current_worst_slack = "" ;
+    open( FILE, "< $file" ) ;
+    $flag = 0;
+    $current_violation_count = 0 ;
+    $current_worst_slack = "N/A" ;
+
+    while( <FILE> ) {
+    	$line = $_;
+	if ($line =~ /^\s*startpoint block/) {
+		$flag = 1;
+		next;
+	}
+	if ($flag == 1) {
+		if ($line =~ /^\s*--------------------/) {
+			$flag = 2;
+			next;
+		}
+	} elsif ($flag == 2) {
+		if ($line =~ /^\s*--------------------/) {
+			last;
+		} elsif ($line =~ /^\s*(\S+)\s+(\S+)\s+(\S+)\s+(\S+)/) {
+			$from = $1;
+			$to = $2;
+			$num = $3;
+			$slack = $4;
+			next if ($from eq "in");
+			next if ($to eq "out");
+			$current_violation_count = $current_violation_count + $num;
+			if ($current_worst_slack eq "N/A") {
+				$current_worst_slack = $slack;
+			} elsif ($current_worst_slack > $slack) {
+				$current_worst_slack = $slack;
+			}
+		}
+	}
+    }
+    close( FILE ) ;
+    if( ( $current_violation_count ne "" ) && ( $current_worst_slack ne "" ) ) {
+      $violation_count{$pmode,$job} = $current_violation_count ;
+      $worst_slack{$pmode,$job} = $current_worst_slack ;
+
+      if( $worst_slack{$pmode,$job} =~ /^-*\d*\.*\d+$/ ) {
+        $worst_slack{$pmode,$job} = sprintf( "%.3f", $worst_slack{$pmode,$job} ) ;
+      }
+      if( $violation_count{$pmode,$job} == 0 ) {
+        printf( "%s : clean (N/A) \n", $file, $worst_slack{$pmode,$job} ) ;
+      } else {
+			  printf( "%s : %d (%.3f) \n", $file,
+         $violation_count{$pmode,$job},
+         $worst_slack{$pmode,$job} ) ;
+      }
+    }
+  }
+}
+
+          printf( " +-----------------------------------------------------------------------------------------------------------------------------------------------------------+\n" ) ;
+	printf( " |%-20s|%-14s|%-14s|%-14s|%-14s|%-14s|%-14s|%-14s|%-14s|%-14s|", "","normal","scan_dc","scan_ac","scan_shift","bistr","mbist","amt","normal_misc","jtag") ;
+
+foreach $job ( @job_list ) {
+        printf( "\n |--------------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+--------------+\n" ) ;
+	printf( " | %-18s |", "$job" );
+	foreach $pmode ( @pmode_list ) {
+	   printf( "% 5s:%7s |", $violation_count{$pmode,$job}, $worst_slack{$pmode,$job} ) ;
+	}
+}
+        printf( "\n +-----------------------------------------------------------------------------------------------------------------------------------------------------------+\n" ) ;

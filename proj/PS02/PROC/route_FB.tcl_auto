@@ -1,0 +1,96 @@
+# setting
+set file_clock_net ""
+#
+set MIN_ROUTING_LAYER M1
+set MAX_ROUTING_LAYER M5
+set CLK_MIN_ROUTING_LAYER M3
+set CLK_MAX_ROUTING_LAYER M5
+set_ignored_layers -min_routing_layer $CLK_MIN_ROUTING_LAYER -max_routing_layer $CLK_MAX_ROUTING_LAYER
+
+set_route_mode_options -zroute true
+set_route_zrt_track_options  -crosstalk_driven true
+set_route_zrt_global_options -crosstalk_driven true
+set_route_zrt_track_options -crosstalk_driven true
+set routeopt_xtalk_reduction_setup_threshold 0.02
+
+set_route_zrt_common_options -max_number_of_threads 4
+# si
+set_si_option -delta_delay true -static_noise true
+set_si_option -timing_window false
+set_si_option -analysis_effort medium
+set si_use_partial_grounding_for_min_analysis true
+set si_filter_per_aggr_noise_peak_ratio 0.01
+set si_filter_accum_aggr_noise_peak_ratio 0.03
+#
+set_route_options  -groute_timing_driven false  -groute_skew_control false  -groute_congestion_weight 4  -groute_clock_routing balanced \
+        -groute_incremental false  -track_assign_timing_driven false  -droute_connect_tie_off true  -droute_connect_open_nets true  \
+        -droute_reroute_user_wires false  -droute_CTS_nets minor_change_only  -droute_single_row_column_via_array center  \
+        -droute_stack_via_less_than_min_area add_metal_stub  -droute_stack_via_less_than_min_area_cost 0  \
+        -poly_pin_access auto  -drc_distance diagonal  -same_net_notch check_and_fix  -fat_wire_check merge_then_check  
+
+set_xtalk_route_options -groute_minimize_xtalk true -groute_xtalk_weight 10 -track_assign_minimize_xtalk true -track_assign_noise_threshold 0.35
+set_extraction_options -min_res_scale 0.9 -max_res_scale 1.1 -min_cap_scale 0.9 -max_cap_scale 1.1 -min_ccap_scale 1.5000 \
+        -max_ccap_scale 1.50000 -min_process_scale 1.00000 -max_process_scale 1.00000 -min_net_ccap_thres 0.003 -max_net_ccap_thres 0.003 \
+        -min_net_ccap_ratio 0.03 -max_net_ccap_ratio 0.03 -min_net_ccap_avg_ratio 0 -max_net_ccap_avg_ratio 0 -no_break_segments \
+        -virtual_shield_extraction false -fan_out_thres 1000 -real_metalfill_extraction none
+set_si_options -delta_delay true -static_noise true -timing_window false -min_delta_delay false -static_noise_threshold_above_low 0.30 \
+        -static_noise_threshold_below_high 0.30 -route_xtalk_prevention true -route_xtalk_prevention_threshold 0.35 \
+        -analysis_effort low -max_transition_mode normal_slew
+
+  set_parameter -name doAntennaConx -value 4
+  set_delay_calculation -clock_arnoldi
+  set_route_zrt_global -clock_topology comb -comb_distance 4 -comb_max_connections 10
+# rule generation
+set M2S [expr ([get_layer_attribute -layer M2 minSpacing]*1.5)]
+set M3S [expr ([get_layer_attribute -layer M3 minSpacing]*1.5)]
+set M4S [expr ([get_layer_attribute -layer M4 minSpacing]*1.5)]
+set M5S [expr ([get_layer_attribute -layer M5 minSpacing]*1.5)]
+#set M6S [expr ([get_layer_attribute -layer M6 minSpacing]*1.5)]
+#set M7S [expr ([get_layer_attribute -layer M7 minSpacing]*1.5)]
+#set M8S [expr ([get_layer_attribute -layer M8 minSpacing]*1.5)]
+#set M9S [expr ([get_layer_attribute -layer M9 minSpacing]*1.5)]
+
+set M2W [expr ([get_layer_attribute -layer M2 minWidth]*1.5)]
+set M3W [expr ([get_layer_attribute -layer M3 minWidth]*1.5)]
+set M4W [expr ([get_layer_attribute -layer M4 minWidth]*1.5)]
+set M5W [expr ([get_layer_attribute -layer M5 minWidth]*1.5)]
+#set M6W [expr ([get_layer_attribute -layer M6 minWidth]*1.5)]
+#set M7W [expr ([get_layer_attribute -layer M7 minWidth]*1.5)]
+#set M8W [expr ([get_layer_attribute -layer M8 minWidth]*1.5)]
+#set M9W [expr ([get_layer_attribute -layer M9 minWidth]*1.5)]
+#
+define_routing_rule \
+-snap_to_track -default_reference_rule \
+-widths "M3 $M3W M4 $M4W M5 $M5W " \
+DSDW_routing_rule
+#
+define_routing_rule \
+-snap_to_track -default_reference_rule \
+-widths "M3 $M3S M4 $M4S M5 $M5S" \
+DS_routing_rule
+#
+define_routing_rule \
+-snap_to_track -default_reference_rule \
+-widths "M3 1 M4 1 M5 1" \
+DW_1um_routing_rule
+#
+if { $file_clock_net != "" } {
+	set f [open $file_clock_net r]
+	while { [gets $f line] >=0 } {
+		set clock_net_collection [ add_to_collection -unique $clock_net_collection [get_net $line]]
+       		#set hotnet [get_attribute [get_net $line] full_name]
+	}
+	close $f
+       	set_net_routing_rule $clock_net_collection -rule DSDW_routing_rule
+} else  {
+	puts "there is no file_clock net file "
+	WARNNING
+
+}
+#
+route_zrt_group -max_detail_route_iterations 10 -all_clock_nets
+#route_zrt_group -max_detail_route_iterations 10 -from_file $clock_file
+#route_zrt_group -max_detail_route_iterations 10 -nets $clock_net_collection
+#
+set_ignored_layers -min_routing_layer $MIN_ROUTING_LAYER -max_routing_layer $MAX_ROUTING_LAYER
+

@@ -1,0 +1,82 @@
+##ash/dongleia modify 20151223/1229
+
+## CREATE_SUPPLY_NET
+create_supply_net VDDI
+create_supply_net VSS
+create_supply_net VDDI_PD30
+
+## CREATE_SUPPLAY_PORT
+create_supply_port VDDI
+create_supply_port VSS
+
+##  CONNECT NET PORT
+connect_supply_net VDDI -port VDDI
+connect_supply_net VSS -port VSS
+
+## CREATE POWER DOMAIN AND SWITHCH RULE
+
+create_power_domain PD_30 
+create_power_switch SW_PD_30_PRE -domain PD_30 \
+                           -input_supply_port {VDDG VDDI} -output_supply_port {VDD VDDI_PD30}  \
+                           -control_port {SLEEP SCPRE_PD_30} \
+                           -ack_port {SLEEPOUT SCPRE_OUT_PD_30} \
+                           -on_state {PD30_on_state_pre VDDG {!SLEEP}} \
+ 
+create_power_switch SW_PD_30_ALL -domain PD_30 \
+                           -input_supply_port {VDDG VDDI} -output_supply_port {VDD VDDI_PD30}  \
+                           -control_port { SLEEP SCALL_PD_30 } \
+                           -ack_port {SLEEPOUT SCALL_OUT_PD_30} \
+                           -on_state {PD30_on_state_all VDDG {!SLEEP}} 
+
+map_power_switch SW_PD_30_PRE -domain PD_30 -lib_cells HEADBUF16_X1M_A8TR_C34 
+map_power_switch SW_PD_30_ALL -domain PD_30 -lib_cells HEADBUF16_X1M_A8TR_C34 
+
+set_domain_supply_net PD_30  -primary_power_net VDDI_PD30 -primary_ground_net VSS 
+
+
+######***************************************************************#################
+##create_power_domain PD30
+##create_power_switch PD30_sw -domain PD30 \
+##                           -input_supply_port {VDDG VDDI} -output_supply_port {VDDI VDDI_PD30}  \
+##                           -control_port {SCPRE_PD_30 SCPRE_PD_30} \
+##                           -control_port {SCALL_PD_30 SCALL_PD_30} \
+##                           -on_state {PD30_on_state_pre VDDG {!SCPRE_PD_30}} \
+##                           -on_state {PD30_on_state_all VDDG {!SCALL_PD_30}}
+##
+##map_power_switch PD30_sw -domain PD30 -lib_cells HEADBUF32_X2M_A8TR_C34
+##
+##set_domain_supply_net PD30  -primary_power_net VDDI_PD30 -primary_ground_net VSS
+#####**************************************************************************#########
+
+
+##### MEM CONNECTION
+connect_supply_net VDDI -ports { c34/RB_DCIO_2_MEM_3/DCIO_2_MEM_3/VDDCE }
+connect_supply_net VDDI -ports { c34/RB_DCIO_2_MEM_4/DCIO_2_MEM_4/VDDCE }
+connect_supply_net VDDI -ports { c34/RB_DCIO_2_MEM_1/DCIO_2_MEM_1/VDDCE }
+connect_supply_net VDDI -ports { c34/RB_DCIO_2_MEM_2/DCIO_2_MEM_2/VDDCE }
+connect_supply_net VDDI -ports { c34/RB_DCIO_2_MEM_7/DCIO_2_MEM_7/VDDCE }
+connect_supply_net VDDI -ports { c34/RB_DCIO_2_MEM_8/DCIO_2_MEM_8/VDDCE }
+connect_supply_net VDDI -ports { c34/RB_DCIO_2_MEM_5/DCIO_2_MEM_5/VDDCE }
+connect_supply_net VDDI -ports { c34/RB_DCIO_2_MEM_6/DCIO_2_MEM_6/VDDCE }
+##connect_supply_net VDDI -ports { c34/sram_REMB0_1_MEM0/VDDCE }
+##connect_supply_net VDDI -ports { c34/sram_REMB0_1_MEM1/VDDCE }
+##connect_supply_net VDDI -ports { c34/sram_REMB0_0_MEM0/VDDCE }
+##connect_supply_net VDDI -ports { c34/sram_REMB0_0_MEM1/VDDCE }
+##connect_supply_net VDDI -ports { c34/sram_WEMB0_1_MEM0/VDDCE }
+##connect_supply_net VDDI -ports { c34/sram_WEMB0_1_MEM1/VDDCE }
+##connect_supply_net VDDI -ports { c34/sram_WEMB0_0_MEM0/VDDCE }
+##connect_supply_net VDDI -ports { c34/sram_WEMB0_0_MEM1/VDDCE }
+##
+
+
+# CREATE POWER STATE TABLE
+add_port_state VSS -state {ground 0}
+
+add_port_state VDDI \
+               -state {act_state 0.95} \
+               -state {off_state off}
+
+
+create_pst ddr34_pst  -supplies           {VSS    VDDI}
+add_pst_state mode1 -pst ddr34_pst -state {ground act_state}
+add_pst_state mode2 -pst ddr34_pst -state {ground off_state}
